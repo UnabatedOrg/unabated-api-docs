@@ -1,0 +1,9 @@
+# Unabated API Services
+
+## Realtime WebSocket Notifications
+
+You will find fully functional code examples for connecting via various methodologies within the `code-examples` folder of this repository.
+
+## Authentication
+
+Fill in values for `REALTIME_API_HOST` and `REALTIME_API_HOST` in the root of this repository with values provided by your account manager.

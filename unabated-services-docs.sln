@@ -1,0 +1,32 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "code-examples", "code-examples", "{0680F1FC-266A-B2F0-00ED-4943F979513D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{26FD5808-EC97-F07D-5913-A906EF652CAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unabated.Realtime.RawWebsockets", "code-examples\dotnet\raw-websockets\Unabated.Realtime.RawWebsockets.csproj", "{53FCD72E-DAB9-ECC6-DD97-14BB9A805584}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53FCD72E-DAB9-ECC6-DD97-14BB9A805584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53FCD72E-DAB9-ECC6-DD97-14BB9A805584}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53FCD72E-DAB9-ECC6-DD97-14BB9A805584}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53FCD72E-DAB9-ECC6-DD97-14BB9A805584}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{26FD5808-EC97-F07D-5913-A906EF652CAC} = {0680F1FC-266A-B2F0-00ED-4943F979513D}
+		{53FCD72E-DAB9-ECC6-DD97-14BB9A805584} = {26FD5808-EC97-F07D-5913-A906EF652CAC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B74EE502-12C6-43C4-ABA7-0606697D1BAA}
+	EndGlobalSection
+EndGlobal

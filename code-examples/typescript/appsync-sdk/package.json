@@ -1,0 +1,19 @@
+{
+  "name": "unabated-realtime-appsync-sdk",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "watch": "tsx ./index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "aws-appsync": "^4.1.10",
+    "dotenv": "^16.5.0",
+    "graphql-tag": "^2.12.6"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4"
+  }
+}
