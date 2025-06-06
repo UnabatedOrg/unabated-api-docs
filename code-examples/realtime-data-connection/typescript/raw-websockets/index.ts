@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
 import { Buffer } from 'buffer';
 
-dotenv.config({ path: '../../../.env' });
+dotenv.config({ path: '../../../../.env' });
 
 const host = process.env.REALTIME_API_HOST;
 const token = process.env.REALTIME_API_KEY;

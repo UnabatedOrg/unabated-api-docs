@@ -7,7 +7,7 @@ import os
 import uuid
 from dotenv import load_dotenv
 
-load_dotenv("../../../.env")
+load_dotenv("../../../../.env")
 
 host = os.getenv("REALTIME_API_HOST")
 token = os.getenv("REALTIME_API_KEY")
