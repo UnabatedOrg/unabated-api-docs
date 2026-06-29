@@ -1,6 +1,6 @@
 # Unabated Realtime API Examples
 
-This repository contains code samples demonstrating how to connect to the Unabated Realtime API via WebSockets. Each folder in `code-examples` contains a language-specific example that can be used as a starting point when integrating with our service.
+This repository contains code samples demonstrating how to connect to the Unabated Realtime API via WebSockets, along with Data API guide material. Each folder in `code-examples` contains a language-specific example that can be used as a starting point when integrating with our service.
 
 ## Getting Started
 
@@ -24,6 +24,10 @@ This repository contains code samples demonstrating how to connect to the Unabat
 - **typescript/appsync-sdk** – Node/TypeScript example leveraging the AWS AppSync SDK.
 
 Each project includes its own `readme.md` with setup and execution steps.
+
+## API Guides
+
+- [Gambly B2B Bet Slip and Article Widget API](docs/gambly-b2b-api.md)
 
 ## Support
 
