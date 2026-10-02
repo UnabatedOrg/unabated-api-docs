@@ -30,12 +30,13 @@ This shared interval applies to odds endpoints. Discovery and bet-slip status re
 
 ### Retry a read safely
 
-This Node.js 20+ example serializes calls made through **one instance** of the client. A distributed integration must coordinate across its processes too. It honors `Retry-After`, bounds attempts, and uses a timeout. Set `UNABATED_API_KEY` securely.
+This Node.js 20+ example serializes calls made through **one instance** of the client. A distributed integration must coordinate across its processes too. It honors `Retry-After`, bounds attempts, and uses a timeout. Set `UNABATED_API_KEY` securely and set `UNABATED_API_BASE_URL` explicitly to the [production or sandbox origin](/start/authentication#production-and-sandbox) matching your key. The example stops if the base URL is missing.
 
 ```javascript
 const key = process.env.UNABATED_API_KEY;
 if (!key) throw new Error('Set UNABATED_API_KEY');
-const base = process.env.UNABATED_API_BASE_URL ?? 'https://data.unabated.com';
+const base = process.env.UNABATED_API_BASE_URL;
+if (!base) throw new Error('Set UNABATED_API_BASE_URL to the intended API origin');
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 let queue = Promise.resolve();
 let nextRequestAt = 0;
