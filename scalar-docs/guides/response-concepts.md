@@ -18,7 +18,7 @@ Odds and many discovery operations return:
 
 `data` is the operation-specific payload: an object, list, or dictionary according to the endpoint schema. Check `success` before reading it. `messages` carries explanatory messages when an operation cannot complete. `pagination` appears only for operations that supply pagination; do not assume every list is paginated.
 
-Bet-slip generation and status are an exception: their responses are direct objects with `status`, `details`, and `requestId`. Middleware and validation errors may also use a different body shape. The [error guide](/guides/errors-and-limits) explains how to handle that distinction.
+Bet-slip generation and status, available to Free API and Enterprise API, are an exception: their responses are direct objects with `status`, `details`, and `requestId`. Concierge API does not include these operations. Middleware and validation errors may also use a different body shape. The [error guide](/guides/errors-and-limits) explains how to handle that distinction.
 
 ## Selection identity
 
@@ -31,7 +31,7 @@ Bet-slip generation and status are an exception: their responses are direct obje
 | `sideIndex`, `sideName` | Side of the market and its display context |
 | `teamId`, `personId` | Team/player selection context when applicable |
 | `marketId` | Underlying market identity |
-| `marketLineId` | Sportsbook market-line identity used for deep-link requests |
+| `marketLineId` | Sportsbook market-line identity; also used for deep-link requests with Free API or Enterprise API |
 | `marketSourceId` | Sportsbook/source identity; discover names with the scoped source endpoint |
 | `points` | Selected spread/total/prop line where the bet uses points |
 
@@ -92,6 +92,6 @@ When consuming live updates, apply the [streaming ordering and recovery rules](/
 
 ## Deep links are selection data
 
-Use the deep link belonging to the displayed selection or alternate. Free odds links are generic Gambly URLs until you add your partner code. Price-only live updates can omit links; retain the existing link for the unchanged selection instead of clearing it whenever a delta lacks `deepLink`.
+When a deep link is returned, use the one belonging to the displayed selection or alternate. Free odds links are generic Gambly URLs until you add your partner code. Price-only live updates can omit links; retain an existing link for the unchanged selection instead of clearing it whenever a delta lacks `deepLink`. Odds collection does not require a link.
 
-When a new selection or different points appears, obtain the correct current link rather than attaching a URL from a different line. See [tracked deep links](/guides/deep-links) and [odds](/guides/odds).
+Before publishing a link for a new selection or different points, obtain the correct current link rather than attaching a URL from a different line. The separate `GET /deeplink` endpoint is available to Free API and Enterprise API, not Concierge API. See [tracked deep links](/guides/deep-links) and [odds](/guides/odds).

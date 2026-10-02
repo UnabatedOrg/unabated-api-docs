@@ -81,7 +81,7 @@ Unabated sends named events. In a browser, register `addEventListener("market_li
 
 Most stream messages contain changes rather than a complete view of all odds. Identify a line by its `marketLineId`, compare its ordering fields with the state you already hold, and apply changes without discarding unrelated REST metadata.
 
-SSE market-line messages do not contain a `deepLink` URL. For a price or status change with unchanged selection points, retain the link obtained from REST. The link encodes the selection's points: when points change, invalidate the old link and retrieve a matching link from REST before publishing it. Apply the same rule to each alternate selection. For a newly encountered selection, retrieve its relevant REST data first.
+SSE market-line messages do not contain a `deepLink` URL. If REST returned a link, retain it for a price or status change only while the selection points remain unchanged. The link encodes those points: when they change, invalidate the old link and obtain a matching link through a workflow available to your API tier before publishing it. Apply the same rule to each alternate selection. Concierge API does not include `GET /deeplink`; its odds store must work without a link. For a newly encountered selection, retrieve its relevant REST data first.
 
 Use the optional server snapshot only after handling its completion and readiness state. If snapshots are unavailable, use REST synchronization with a bounded buffer of incoming events. Reconnect recovery is best effort and does not provide durable historical replay, so a resumed connection alone does not prove your state is complete. [Snapshots and recovery](/guides/streaming/recovery) explains these boundaries.
 
@@ -100,7 +100,9 @@ Read the streaming lifecycle, filter, and recovery pages first. Discover IDs,
 create a narrowly filtered subscription, and consume named SSE events using
 standard framing. Keep credentials in environment variables and never log
 the signed stream URL. Maintain state by stable IDs, reject stale updates,
-retain REST deep links only for unchanged selection points, refetch links
-when points change, and repair uncertain continuity with REST data.
+retain any returned REST deep links only for unchanged selection points,
+and repair uncertain continuity with REST data. Obtain replacement links
+only through workflows available to our API tier; do not call /deeplink
+or bet-slip generation/status endpoints with Concierge API.
 Use event families available for our API tier.
 ```
