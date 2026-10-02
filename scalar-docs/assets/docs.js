@@ -11,8 +11,8 @@
   };
   const notes = {
     free: 'Free odds are delayed by at least 15 seconds. Make one odds request every five seconds per API key, shared across all odds endpoints.',
-    concierge: 'Concierge provides real-time odds and entitled streaming for NFL, NBA, MLB, NHL, and WNBA. Additional data features require their own permissions.',
-    enterprise: 'Enterprise league, book, and feature access depends on your contract and explicit entitlements. NFL in-game models are never included by default for API users.'
+    concierge: 'Concierge provides real-time odds and live streaming for NFL, NBA, MLB, NHL, and WNBA. Check each endpoint for available tiers.',
+    enterprise: 'Enterprise supports additional data features. NFL in-game model endpoints are available for Enterprise API. Check each endpoint for available tiers.'
   };
   const onboard = {
     free: 'Complete your content partner profile, then generate a key in your account. Already a Concierge subscriber? Your API key management is available in the same place.',
@@ -73,7 +73,7 @@
       });
     }
     // Multi-page Scalar Docs does not forward modelsSectionLabel. This is the
-    // response schema index, distinct from the entitled NFL model endpoint.
+    // response schema index, distinct from the NFL model endpoint.
     if (location.pathname.startsWith('/reference')) {
       document.querySelectorAll('aside.t-doc__sidebar button[aria-expanded] > div').forEach(el => {
         if (el.classList.contains('group/button-label') && el.textContent.trim() === 'Models') {

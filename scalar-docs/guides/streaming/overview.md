@@ -4,11 +4,11 @@
 
 Server-Sent Events (SSE) sends updates through a persistent HTTP connection. Use REST to load the data your application needs, then SSE to keep prices, markets, and event state current.
 
-Concierge API streaming is scoped to NFL, NBA, MLB, NHL, and WNBA. Enterprise API scope follows your agreement. Every subscription remains within the data and features authorized for its API key.
+Concierge API streaming covers NFL, NBA, MLB, NHL, and WNBA. Enterprise API coverage follows your agreement. Every subscription remains within your API tier's available data.
 
 <scalar-callout type="info">
 
-Free API access does not include SSE. Use the Free Odds API REST workflow and its polling limits instead. NFL in-game models require a separate, explicitly enabled Enterprise API feature; ordinary streaming access does not include them.
+Free API access does not include SSE. Use the Free Odds API REST workflow and its polling limits instead. NFL in-game models are available through Enterprise API; they are not part of Free API or Concierge API.
 
 </scalar-callout>
 
@@ -92,17 +92,17 @@ Use the optional server snapshot only after handling its completion and readines
 - [Connect and receive your first events](/guides/streaming/lifecycle): runnable cURL, JavaScript, and Python examples, plus a browser `EventSource` example.
 - [Events and filters](/guides/streaming/events-and-filters): supported families, exact payload roots, filter behavior, and line-update rules.
 - [Snapshots and recovery](/guides/streaming/recovery): initialization, `Last-Event-ID`, gap notices, expiry, and state repair.
-- [NFL in-game models](/guides/streaming/models): explicit Enterprise API access and model state transitions.
+- [NFL in-game models](/guides/streaming/models): Enterprise API fair prices and model state transitions.
 
 ## Agent task
 
 ```text
-Build a server-side Unabated live-odds integration for my entitled API tier.
+Build a server-side Unabated live-odds integration for Concierge API or Enterprise API.
 Read the streaming lifecycle, filter, and recovery pages first. Discover IDs,
 create a narrowly filtered subscription, and consume named SSE events using
 standard framing. Keep credentials in environment variables and never log
 the signed stream URL. Maintain state by stable IDs, reject stale updates,
 retain REST deep links only for unchanged selection points, refetch links
 when points change, and repair uncertain continuity with REST data.
-Do not request NFL in-game models unless I explicitly have that feature.
+Use NFL in-game models only when included in our Enterprise API agreement.
 ```

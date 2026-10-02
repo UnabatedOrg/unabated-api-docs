@@ -32,9 +32,9 @@
 url.searchParams.set("utm_campaign", partnerCode);
 const publishedLink = url.toString();</code></pre></div><div class="ua-note ua-warn"><span class="ua-icon" aria-hidden="true">⚠</span><p><strong>Free partners: add your tracking code.</strong> Untagged clicks do not count toward your traffic. Test the link from your site or platform, then confirm the lifetime count and last-click time in your account.</p></div><a class="ua-textlink" href="/guides/deep-links">See the complete deep-link workflow →</a></div></div>
 
-<div class="ua-step ua-stream-step"><span class="ua-step-number" aria-hidden="true">4</span><div><h2>Add live updates when your key is entitled</h2><p>Concierge and Enterprise integrations can create a filtered subscription, then open its signed SSE URL. Free API access uses REST polling. Feature and league entitlements still apply.</p><a class="ua-textlink" href="/guides/streaming/lifecycle">Read the streaming lifecycle guide →</a></div></div>
+<div class="ua-step ua-stream-step"><span class="ua-step-number" aria-hidden="true">4</span><div><h2>Add live updates with Concierge API or Enterprise API</h2><p>Create a filtered subscription, then open its signed SSE URL to receive updates within your API tier's data coverage. Free API access uses REST polling.</p><a class="ua-textlink" href="/guides/streaming/lifecycle">Read the streaming lifecycle guide →</a></div></div>
 
 <div class="ua-next"><span>Next: understand the odds response</span><a href="/guides/odds">Explore odds and markets →</a></div>
-<p class="ua-small">Selecting a tier above changes the guidance shown here. It does not change your account permissions. <a href="/start/access-tiers">Compare access tiers</a>.</p>
+<p class="ua-small">Selecting a tier above changes the guidance shown here. It does not change your API tier. <a href="/start/access-tiers">Compare access tiers</a>.</p>
 <div class="ua-copy-status" role="status" aria-live="polite" data-ua-copy-status></div>
 </div>

@@ -1,6 +1,6 @@
 # Publish and test tracked deep links
 
-**Available for: Free API · Concierge API · Enterprise API.** Standard deep-link access requires the relevant permission and sportsbook scope. Partner attribution is required to receive credit for Free content partner traffic.
+**Available for: Free API · Concierge API · Enterprise API.** Standard deep links cover the sportsbooks available for your API tier. Partner attribution is required to receive credit for Free API content partner traffic.
 
 A deep link opens a sportsbook with a specific selection or bet slip. Use the link returned by the API; do not construct a sportsbook's private URL format yourself. Destination availability and prices can change before a user opens the link.
 
@@ -104,7 +104,7 @@ curl --fail-with-body --connect-timeout 5 --max-time 20 --get \
 
 Use `_` for a selection without points when supplying a list of point values. If `points` is supplied, its item count must match `ids`. For Free callers, the operation supports at most 20 selections, all from the same included sportsbook, and returns a generic Gambly URL in `data.url` and `data.individualUrls`. Add your partner code before publishing that URL.
 
-Invalid IDs or mismatched lists can produce `400`; a missing selection can produce `404`; a book outside Free scope can produce `403`. The SGP pricing/generation operations are separate gated features and are not included in Free API access.
+Invalid IDs or mismatched lists can produce `400`; a missing selection can produce `404`; a book outside Free API coverage can produce `403`. Same-game parlay pricing and generation are available for Enterprise API.
 
 ## Generated bet-slip links
 

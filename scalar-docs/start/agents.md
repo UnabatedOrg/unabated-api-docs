@@ -1,6 +1,6 @@
 # Agents welcome
 
-These docs are built for humans and agents working together. Start with the successful request flow, discover current identifiers from the API, and read each endpoint's tier and feature requirements before making calls.
+These docs are built for humans and agents working together. Start with the successful request flow, discover current identifiers from the API, and read each endpoint's available API tiers before making calls.
 
 ## Read the documentation
 
@@ -21,8 +21,8 @@ The [OpenAPI specification](https://data.unabated.com/swagger/v1/swagger.json) i
 4. Serialize Free odds requests through one scheduler per API key. The five-second interval is shared across odds endpoints; honor `Retry-After` after a `429`.
 5. Read structured odds fields rather than parsing composite dictionary keys. Preserve IDs, prices, points, timestamps, and selection context.
 6. For a Free partner, add the partner code to returned generic Gambly links and test from the partner's own platform. Do not guess a sportsbook destination or fabricate a selection URL.
-7. Use SSE only with Concierge or Enterprise entitlement. Additional event families, including the NFL output model, require explicit feature access.
-8. Use bounded retries and request timeouts. Report missing entitlement or unsupported scope rather than attempting to work around it.
+7. Use SSE with Concierge API or Enterprise API. The NFL output model and additional datasets are available through Enterprise API according to your agreement.
+8. Use bounded retries and request timeouts. Report an unavailable API tier or unsupported data request rather than attempting to work around it.
 
 ## Example prompts
 
@@ -45,12 +45,12 @@ Keep all credentials out of the client, logs, and generated source files.
 
 ```text
 Using the Unabated streaming guides and API Reference, build a server-side
-client for an entitled Concierge or Enterprise key. Discover filter IDs,
+client for a Concierge API or Enterprise API key. Discover filter IDs,
 create a subscription, connect to its signed URL, and maintain current
 state according to the documented snapshot, ordering, and recovery rules.
-Do not request features our key does not have. Redact signed URLs and keys
+Use event families available for our API tier. Redact signed URLs and keys
 from logs, retain existing deep links across price-only updates, and close
-streams on shutdown. Explain any entitlement assumptions before running.
+streams on shutdown. Confirm our API tier and data coverage before running.
 ```
 
 ### Generate a bet slip

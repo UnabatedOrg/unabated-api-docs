@@ -1,20 +1,20 @@
 # NFL in-game models
 
-**Available for: Enterprise API — explicit NFL in-game model access required**
+**Available for: Enterprise API**
 
-The NFL in-game model supplies fair-price state through REST and the `in_game_fair_price_update` SSE event. This feature is **not included by default in any API key**, including Concierge API keys. Free API keys cannot access it.
+The NFL in-game model estimates probabilities for betting outcomes using live game state. A fair price expresses that model estimate as American odds, so your application can compare it with a sportsbook's quoted price.
 
-Paid interactive Unabated Premium and Concierge users have a separate application UI access path. That interactive UI access does not grant their API key permission to consume the model. Contact Unabated to enable the Enterprise API model feature for an API integration.
+Retrieve current model state through REST or receive changes through the `in_game_fair_price_update` SSE event. NFL in-game models are available through Enterprise API and are not part of Free API or Concierge API. Contact Unabated to include this dataset in your Enterprise API agreement.
 
 ## Read current state or subscribe to changes
 
 | Operation | Purpose |
 | --- | --- |
 | `GET /market/nfl/in-game-fair-prices` | REST snapshot of the current indexed NFL event states. |
-| `POST /subscriptions` with `in_game_fair_price_update` | Create an entitled model stream subscription. |
+| `POST /subscriptions` with `in_game_fair_price_update` | Create a model stream subscription. |
 | Signed `GET /sse/{subscriptionId}` | Receive the model updates for that subscription. |
 
-The subscription also requires ordinary SSE market-data access. Request the model event explicitly; it is not included in the default `market_line_update` subscription.
+Request the model event explicitly; it is not included in the default `market_line_update` subscription.
 
 ```json
 {
@@ -23,9 +23,9 @@ The subscription also requires ordinary SSE market-data access. Request the mode
 }
 ```
 
-The example uses the NFL league ID from the current protocol. Use discovery data to map your league IDs. `leagueIds` applies to model events. `eventIds`, `marketTypeIds`, `marketSourceIds`, `betTypeIds`, and `projectionSourceIds` do **not** narrow this family; filter `fairPriceSet.eventId` locally if you need only one game.
+The example uses the NFL league ID from the current protocol. Use discovery data to map your league IDs. `leagueIds` applies to model events. `eventIds`, `marketTypeIds`, `marketSourceIds`, and `betTypeIds` do **not** narrow this family; filter `fairPriceSet.eventId` locally if you need only one game.
 
-Missing explicit model access returns `403` at subscription creation. Do not infer that access is granted because a key can stream ordinary sportsbook prices.
+A model request outside your Enterprise API agreement returns `403`. Confirm that your agreement includes NFL in-game models before requesting this dataset.
 
 ## Full state replacement per event
 
@@ -88,7 +88,7 @@ Only `ready` state may drive active calculations. Do not invent a model expirati
 
 ## Initialize and repair model state
 
-Open the entitled SSE subscription, buffer model frames within a bounded budget, and fetch `GET /market/nfl/in-game-fair-prices`. The REST response's `data` array contains current indexed event states. Replace the local view with that snapshot, then apply newer buffered states using the model-specific ordering fields.
+Open the model SSE subscription, buffer model frames within a bounded budget, and fetch `GET /market/nfl/in-game-fair-prices`. The REST response's `data` array contains current indexed event states. Replace the local view with that snapshot, then apply newer buffered states using the model-specific ordering fields.
 
 Repeat this on a prolonged interruption, a `gap` notice, or any uncertain continuity. If the REST request fails, returns `success: false`, or contains no valid state for an event, clear or suspend its active fair-price calculations. Do not keep using an old ladder as if it were current.
 
@@ -97,11 +97,11 @@ The optional `includeSnapshot` market-line feature does not send a model-state s
 ## Agent task
 
 ```text
-Integrate Unabated NFL in-game fair prices only if my Enterprise API key has
-explicit model access. Create the model SSE subscription, load its REST
+Integrate Unabated NFL in-game fair prices for Enterprise API. Confirm that
+our agreement includes this dataset. Create the model SSE subscription, load its REST
 snapshot, and maintain full replacement state by leagueId and eventId.
 Only ready output may drive calculations. Handle expired and unavailable
 transitions, reject stale output, suspend calculations on uncertain state,
-and resynchronize after gaps. Never infer access from an interactive paid
-account or from successful ordinary odds streaming.
+and resynchronize after gaps. Use the documented API tier availability
+when choosing event families.
 ```
