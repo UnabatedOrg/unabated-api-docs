@@ -1,0 +1,24 @@
+footer {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--scalar-paragraph);
+  line-height: 1.625;
+  max-width: 680px;
+  margin: 0 auto;
+}
+footer p {
+  margin-bottom: 25px;
+}
+footer a {
+  width: fit-content;
+  color:var(--scalar-color-accent)
+}
+footer a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+@media (max-width: 1000px) {
+  footer {
+    max-width: 100%;
+  }
+}
