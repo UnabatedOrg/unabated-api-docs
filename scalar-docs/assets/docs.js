@@ -65,8 +65,13 @@
         render(root);
       }
     });
-    // Keep account links correct after client-side navigation.
-    document.querySelectorAll('a[href="https://tools.unabated.com/api-keys"]').forEach(el => { if (sandbox) el.href = account; });
+    // Keep onboarding links in the current environment after client-side
+    // navigation. Preserve explicitly labelled environment links in tables.
+    if (sandbox) {
+      document.querySelectorAll('a[href="https://tools.unabated.com/api-keys"], a[href="https://tools.unabated.com/free-api"]').forEach(el => {
+        if (!el.closest('table')) el.href = el.href.replace('https://tools.unabated.com', 'https://becoming-tools.unabated.com');
+      });
+    }
     // Multi-page Scalar Docs does not forward modelsSectionLabel. This is the
     // response schema index, distinct from the entitled NFL model endpoint.
     if (location.pathname.startsWith('/reference')) {

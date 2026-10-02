@@ -16,12 +16,14 @@ ENVIRONMENTS = {
         "domain": "docs.unabated.com",
         "subdomain": "unabated",
         "api": "https://data.unabated.com",
+        "account": "https://tools.unabated.com/api-keys",
     },
     "dev": {
         "config": "scalar-docs/scalar.dev.config.json",
         "domain": "docs-sandbox.unabated.com",
         "subdomain": "unabated-sandbox",
         "api": "https://data-sandbox.unabated.com",
+        "account": "https://becoming-tools.unabated.com/api-keys",
     },
 }
 
@@ -78,6 +80,9 @@ def validate_environment(name, settings, repo_root, errors):
         errors.append(f"{name}.versions: at least one version is required")
     for version_name, version in versions.items():
         location = f"{name}.versions.{version_name}"
+        account_links = [item.get("to") for item in version.get("header", []) if item.get("title") == "Get your API key ↗"]
+        if account_links != [settings["account"]]:
+            errors.append(f"{location}.header: expected one API key link at {settings['account']!r}")
         routes = object_field(version, "routes", location, errors)
         reference = object_field(routes, "/reference", location + ".routes", errors)
         if reference.get("type") != "openapi":
@@ -115,6 +120,9 @@ def shared_versions(config):
     for version in versions.values():
         if not isinstance(version, dict):
             continue
+        for item in version.get("header", []):
+            if item.get("title") == "Get your API key ↗":
+                item.pop("to", None)
         routes = version.get("routes", {})
         reference = routes.get("/reference", {}) if isinstance(routes, dict) else {}
         if not isinstance(reference, dict):
