@@ -85,6 +85,9 @@ def validate_environment(name, settings, repo_root, errors):
         account_links = [item.get("to") for item in version.get("header", []) if item.get("title") == "Get your API key ↗"]
         if account_links != [settings["account"]]:
             errors.append(f"{location}.header: expected one API key link at {settings['account']!r}")
+        for item in version.get("header", []):
+            if item.get("title") != "Get your API key ↗" and not item.get("to", "").startswith("https://docs.unabated.com/"):
+                errors.append(f"{location}.header: documentation links must use https://docs.unabated.com")
         routes = object_field(version, "routes", location, errors)
         reference = object_field(routes, "/reference", location + ".routes", errors)
         if reference.get("type") != "openapi":
@@ -164,6 +167,9 @@ def validate_content(config, config_path, errors):
 
     for version in config.get("versions", {}).values():
         visit(version.get("routes", {}))
+    footer = config.get("siteConfig", {}).get("footer", {}).get("filepath")
+    if footer:
+        pages.append(config_path.parent / footer)
     routes.update(redirect["from"] for redirect in config.get("siteConfig", {}).get("routing", {}).get("redirects", []) if ":" not in redirect["from"])
     routes.update({"/llms.txt", "/llms-full.txt"})
     deprecated = re.compile(r"web[ -]?sockets?|realtime\.(?:unabated|nimbeta|unibeta|unabeta)\.com", re.I)
@@ -184,9 +190,14 @@ def validate_content(config, config_path, errors):
             errors.append(f"{page.name}: customer documentation must not mention private API environments")
         if len(re.findall(r"^```", text, re.M)) % 2:
             errors.append(f"{page.name}: an authored code fence is not closed")
-        links = re.findall(r"\]\((/[^\s)]+)\)", text) + re.findall(r'href="(/[^" ]+)"', text)
+        links = re.findall(r"\]\(([^\s)]+)\)", text) + re.findall(r'href="([^" ]+)"', text)
         for link in links:
-            path = urlparse(link).path
+            parsed = urlparse(link)
+            if link.startswith("/"):
+                errors.append(f"{page.name}: documentation link must use https://docs.unabated.com: {link}")
+            elif parsed.netloc != "docs.unabated.com":
+                continue
+            path = parsed.path
             if path not in routes:
                 errors.append(f"{page.name}: local documentation link has no route: {link}")
 

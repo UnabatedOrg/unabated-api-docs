@@ -18,7 +18,7 @@ Odds and many discovery operations return:
 
 `data` is the operation-specific payload: an object, list, or dictionary according to the endpoint schema. Check `success` before reading it. `messages` carries explanatory messages when an operation cannot complete. `pagination` appears only for operations that supply pagination; do not assume every list is paginated.
 
-Bet-slip generation and status are an exception: their responses are direct objects with `status`, `details`, and `requestId`. Middleware and validation errors may also use a different body shape. The [error guide](/guides/errors-and-limits) explains how to handle that distinction.
+Bet-slip generation and status are an exception: their responses are direct objects with `status`, `details`, and `requestId`. Middleware and validation errors may also use a different body shape. The [error guide](https://docs.unabated.com/guides/errors-and-limits) explains how to handle that distinction.
 
 ## Selection identity
 
@@ -88,10 +88,10 @@ Null fields can be omitted from JSON. Fields outside your API tier's datasets ma
 
 `modifiedOn` identifies an individual record's modification time where provided. `sequenceNumber` and `freshnessExpiresAt` provide additional line context. The response timestamp does not mean every line changed at once; a delayed response can contain many unchanged selections.
 
-When consuming live updates, apply the [streaming ordering and recovery rules](/guides/streaming/recovery). Do not compare SSE event IDs as if they were interchangeable with a market line's sequence number.
+When consuming live updates, apply the [streaming ordering and recovery rules](https://docs.unabated.com/guides/streaming/recovery). Do not compare SSE event IDs as if they were interchangeable with a market line's sequence number.
 
 ## Deep links are selection data
 
 Use the deep link belonging to the displayed selection or alternate. Free odds links are generic Gambly URLs until you add your partner code. Price-only live updates can omit links; retain the existing link for the unchanged selection instead of clearing it whenever a delta lacks `deepLink`.
 
-When a new selection or different points appears, obtain the correct current link rather than attaching a URL from a different line. See [tracked deep links](/guides/deep-links) and [odds](/guides/odds).
+When a new selection or different points appears, obtain the correct current link rather than attaching a URL from a different line. See [tracked deep links](https://docs.unabated.com/guides/deep-links) and [odds](https://docs.unabated.com/guides/odds).

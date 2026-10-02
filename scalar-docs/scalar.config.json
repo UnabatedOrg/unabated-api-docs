@@ -106,22 +106,22 @@
         {
           "type": "link",
           "title": "Start",
-          "to": "/start/quickstart"
+          "to": "https://docs.unabated.com/start/quickstart"
         },
         {
           "type": "link",
           "title": "Guides",
-          "to": "/guides/odds"
+          "to": "https://docs.unabated.com/guides/odds"
         },
         {
           "type": "link",
           "title": "API reference",
-          "to": "/reference"
+          "to": "https://docs.unabated.com/reference"
         },
         {
           "type": "link",
           "title": "Changelog",
-          "to": "/changelog"
+          "to": "https://docs.unabated.com/changelog"
         },
         {
           "type": "link",

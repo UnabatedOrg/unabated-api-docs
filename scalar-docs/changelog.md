@@ -8,4 +8,4 @@
 - REST subscription creation and signed Server-Sent Events connections for Concierge API and Enterprise API customers.
 - One documentation site with Free API, Concierge API, and Enterprise API availability on each endpoint.
 
-For the current contract, use the [API reference](/reference). Discover leagues, sportsbooks, and bet types using the [discovery endpoints](/guides/discovery) rather than historical lists.
+For the current contract, use the [API reference](https://docs.unabated.com/reference). Discover leagues, sportsbooks, and bet types using the [discovery endpoints](https://docs.unabated.com/guides/discovery) rather than historical lists.

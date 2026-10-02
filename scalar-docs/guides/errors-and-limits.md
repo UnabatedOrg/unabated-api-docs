@@ -2,7 +2,7 @@
 
 **Available for: Free API · Concierge API · Enterprise API.** The five-second odds interval below applies to Free API keys; other limits depend on your API tier.
 
-Check the HTTP status first. For endpoints using the public envelope, also check `success` and `messages` before reading `data`. Bet-slip operations use a direct status object instead; see their [lifecycle guide](/guides/bet-slips).
+Check the HTTP status first. For endpoints using the public envelope, also check `success` and `messages` before reading `data`. Bet-slip operations use a direct status object instead; see their [lifecycle guide](https://docs.unabated.com/guides/bet-slips).
 
 ## Know what the response means
 
@@ -30,7 +30,7 @@ This shared interval applies to odds endpoints. Discovery and bet-slip status re
 
 ### Retry a read safely
 
-This Node.js 20+ example serializes calls made through **one instance** of the client. A distributed integration must coordinate across its processes too. It honors `Retry-After`, bounds attempts, and uses a timeout. Set `UNABATED_API_KEY` securely and set `UNABATED_API_BASE_URL` explicitly to the [API base URL](/start/authentication#api-base-url), `https://data.unabated.com`. The example stops if the base URL is missing.
+This Node.js 20+ example serializes calls made through **one instance** of the client. A distributed integration must coordinate across its processes too. It honors `Retry-After`, bounds attempts, and uses a timeout. Set `UNABATED_API_KEY` securely and set `UNABATED_API_BASE_URL` explicitly to the [API base URL](https://docs.unabated.com/start/authentication#api-base-url), `https://data.unabated.com`. The example stops if the base URL is missing.
 
 ```javascript
 const key = process.env.UNABATED_API_KEY;
@@ -88,7 +88,7 @@ The example retries only explicit temporary odds responses. It does not retry `4
 
 Free data is delayed by at least 15 seconds. Polling more often cannot remove that delay. An individual market may not have changed for minutes, so line timestamps can be older than the minimum delay. A temporary snapshot failure should be visible to your application; do not substitute an unrelated stale board without labeling it.
 
-Live access also does not mean every line changes on every request. Cache metadata separately from changing prices and show the relevant update context. See [response concepts](/guides/response-concepts).
+Live access also does not mean every line changes on every request. Cache metadata separately from changing prices and show the relevant update context. See [response concepts](https://docs.unabated.com/guides/response-concepts).
 
 ## Investigate without exposing credentials
 

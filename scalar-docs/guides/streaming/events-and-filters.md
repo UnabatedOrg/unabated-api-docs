@@ -211,4 +211,4 @@ Identify the event by `eventId` and reject older `modifiedOn` values when availa
 
 </scalar-detail>
 
-Next: [Connect with a complete sample](/guides/streaming/lifecycle) or [handle snapshots and reconnects](/guides/streaming/recovery).
+Next: [Connect with a complete sample](https://docs.unabated.com/guides/streaming/lifecycle) or [handle snapshots and reconnects](https://docs.unabated.com/guides/streaming/recovery).
