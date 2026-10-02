@@ -86,6 +86,8 @@ def validate_environment(name, settings, repo_root, errors):
         if reference.get("url") != expected_source:
             errors.append(f"{location}.routes./reference.url: expected {expected_source!r}")
         reference_config = object_field(reference, "config", location + ".routes./reference", errors)
+        if reference_config.get("documentDownloadType") != "none":
+            errors.append(f"{location}.routes./reference.config.documentDownloadType: expected 'none'; readable guides do not require a JSON download")
         servers = reference_config.get("servers")
         urls = [server.get("url") for server in servers if isinstance(server, dict)] if isinstance(servers, list) else None
         if urls != [settings["api"]] or not isinstance(servers, list) or len(servers) != 1:
