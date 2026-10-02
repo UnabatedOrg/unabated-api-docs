@@ -57,9 +57,9 @@ Data event payloads use a `data` envelope with a camel-case root. Snapshot compl
 | `play_by_play` | `data.playByPlay` | Play-by-play state. Enterprise API. |
 | `market_line_snapshot` | `data.marketLineUpdate` | Requested initial market-line snapshot chunk; same line shape as a market-line update. |
 | `market_line_snapshot_complete` | top-level `lineCount`, `sequence`, `ready` | Initial snapshot completion/readiness control frame. |
-| `gap` | top-level `droppedEvents` | The current connection discarded queued events because the consumer fell behind. Repair state from REST. |
+| `gap` | top-level `droppedEvents` | Automatic warning that an already-open connection discarded queued events because the consumer fell behind. Repair state from REST. |
 
-The control event names cannot be used as ordinary subscription event types. Request `includeSnapshot` to ask for snapshots; listen for `gap` on every connection. Do not infer commercial feature availability just because an event name exists in the protocol.
+The control event names cannot be used as ordinary subscription event types. Request `includeSnapshot` to ask for snapshots; listen for `gap` on every connection. The server sends `gap` automatically when queued events are dropped; there is no endpoint to call to request it. It does not replay changes missed between a REST snapshot and opening SSE. Address that race by [opening and buffering SSE before loading REST, then reconciling ordering](/guides/streaming/recovery#rest-initialization-with-buffered-updates). Do not infer commercial feature availability just because an event name exists in the protocol.
 
 ## Filter applicability
 
@@ -133,7 +133,7 @@ This is illustrative sample output. Fields depend on the line and your API tier'
 - A streaming `null` can explicitly clear a field. Do not drop all null-valued fields while merging.
 - Preserve unrelated REST-only metadata. Retain a `deepLink` for price or status changes only when the selection's points remain unchanged. If points change, invalidate and refetch its link; apply this rule to each alternate too. The stream does not resend deep links with updates.
 
-Market-line status is a protocol enum: `1` Available, `2` Unavailable, `3` PriceUnknown. `disabled: true` also means the line should not be offered as an available wager. `freshnessExpiresAt`, when present, is a UTC freshness boundary for the line; stop presenting an expired quote as current. This is separate from NFL model state transitions.
+Market-line status is a protocol enum: `1` Available, `2` Unavailable, `3` PriceUnknown. `disabled: true` also means the line should not be offered as an available wager. `freshnessExpiresAt`, when present, is a UTC freshness boundary for the line; stop presenting an expired quote as current.
 
 ### Alternate lines and liquidity
 
@@ -211,4 +211,4 @@ Identify the event by `eventId` and reject older `modifiedOn` values when availa
 
 </scalar-detail>
 
-Next: [Connect with a complete sample](https://docs.unabated.com/guides/streaming/lifecycle) or [handle snapshots and reconnects](https://docs.unabated.com/guides/streaming/recovery).
+Next: [Connect with a complete sample](/guides/streaming/lifecycle) or [handle snapshots and reconnects](/guides/streaming/recovery).

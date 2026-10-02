@@ -22,7 +22,7 @@ The REST odds path uses market type names; an SSE filter that requests a market 
 
 ## Read a current league list
 
-Set `UNABATED_API_KEY` securely and set `UNABATED_API_BASE_URL` explicitly to the [API base URL](https://docs.unabated.com/start/authentication#api-base-url), `https://data.unabated.com`. The examples stop if the base URL is missing and print league IDs and route names when the request succeeds.
+Set `UNABATED_API_KEY` securely and set `UNABATED_API_BASE_URL` explicitly to the [API base URL](/start/authentication#api-base-url), `https://data.unabated.com`. The examples stop if the base URL is missing and print league IDs and route names when the request succeeds.
 
 <scalar-tabs>
 <scalar-tab title="cURL">
@@ -91,12 +91,12 @@ curl --fail-with-body --connect-timeout 5 --max-time 20 \
   "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to https://data.unabated.com}/market/nfl/straight/sources"
 ```
 
-The source response contains `id`, `name`, logo URLs, and status fields. A source being present does not guarantee a usable line for every event. Inspect the returned odds and line status.
+The source response contains active public sportsbooks within your API coverage, including their `id`, `name`, logo URLs, and status fields. A source being present does not guarantee a usable line for every event. Inspect the returned odds and line status.
 
 ## Cache metadata deliberately
 
 Cache relatively stable lookup data in your application and refresh it periodically. Several discovery operations accept `changedSince`; use it only where the endpoint reference documents it. Store the time of your last successful refresh and preserve existing records when processing changes.
 
-There is no documented event-status or market-line-status discovery endpoint. Their stable numeric values are explained in [response concepts](https://docs.unabated.com/guides/response-concepts); do not invent a route for them.
+There is no documented event-status or market-line-status discovery endpoint. Their stable numeric values are explained in [response concepts](/guides/response-concepts); do not invent a route for them.
 
-Next: [read an odds board](https://docs.unabated.com/guides/odds) using current league and bet type identifiers.
+Next: [read an odds board](/guides/odds) using current league and bet type identifiers.

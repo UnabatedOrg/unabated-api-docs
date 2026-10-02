@@ -11,6 +11,8 @@ Tracked branches are selected in each project's Scalar **Settings → Git Sync**
 
 This file is an internal deployment runbook and is not a published page. The dev site's private Swagger source allows review of upcoming reference changes. Both sites describe the customer API at `https://data.unabated.com` and link to `https://tools.unabated.com/api-keys`. Public guides, generated examples, page titles, and exports must not offer sandbox access. The request builder on the dev docs site also targets the customer API; do not submit a test request unless the intended production call is authorized.
 
+Documentation navigation stays root-relative so headers, page links, and previous/next controls remain on the site being reviewed. Written documentation URLs, copied starter prompts, and API examples use production addresses. Preserve the same page names and routes in both projects; do not rewrite navigation to the production origin in JavaScript.
+
 ## Make and review changes in dev
 
 1. Change shared Markdown guides and assets on a development branch, then merge the reviewed changes into `dev`.

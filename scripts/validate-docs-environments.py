@@ -86,8 +86,8 @@ def validate_environment(name, settings, repo_root, errors):
         if account_links != [settings["account"]]:
             errors.append(f"{location}.header: expected one API key link at {settings['account']!r}")
         for item in version.get("header", []):
-            if item.get("title") != "Get your API key ↗" and not item.get("to", "").startswith("https://docs.unabated.com/"):
-                errors.append(f"{location}.header: documentation links must use https://docs.unabated.com")
+            if item.get("title") != "Get your API key ↗" and not item.get("to", "").startswith("/"):
+                errors.append(f"{location}.header: documentation navigation must use local page routes")
         routes = object_field(version, "routes", location, errors)
         reference = object_field(routes, "/reference", location + ".routes", errors)
         if reference.get("type") != "openapi":
@@ -193,9 +193,7 @@ def validate_content(config, config_path, errors):
         links = re.findall(r"\]\(([^\s)]+)\)", text) + re.findall(r'href="([^" ]+)"', text)
         for link in links:
             parsed = urlparse(link)
-            if link.startswith("/"):
-                errors.append(f"{page.name}: documentation link must use https://docs.unabated.com: {link}")
-            elif parsed.netloc != "docs.unabated.com":
+            if not link.startswith("/") and parsed.netloc != "docs.unabated.com":
                 continue
             path = parsed.path
             if path not in routes:

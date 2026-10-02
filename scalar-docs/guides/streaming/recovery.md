@@ -39,10 +39,10 @@ The snapshot feature is server-controlled. If disabled, `includeSnapshot: true` 
 
 ## REST initialization with buffered updates
 
-This works whether or not server snapshots are available:
+Open SSE and begin buffering updates **before** loading REST to address the snapshot/stream race. This works whether or not server snapshots are available:
 
 1. Create a narrowly filtered subscription and open its returned signed URL.
-2. Once the connection opens, buffer incoming application events while fetching the relevant REST odds and event data.
+2. Once the connection opens, begin buffering incoming application events, then fetch the relevant REST odds and event data.
 3. Build indexes keyed by `marketLineId` and `eventId` from the REST response. Retain its deep links and descriptive metadata alongside their selection points.
 4. Apply the buffered events with the same ordering checks you will use during live delivery.
 5. Switch to live processing and continue to repair gaps or missing metadata from REST.
@@ -133,7 +133,7 @@ Opening the same subscription again replaces its previous connection on the same
 
 ## Handle a `gap` notice
 
-The general stream keeps its connection open when a slow consumer's bounded queue overflows. It discards older queued events and sends a notice before the next data delivery:
+The server automatically sends `gap` when a slow consumer's bounded queue on an already-open connection overflows. It keeps the stream open, discards older queued events, and sends a notice before the next data delivery. You cannot subscribe to `gap` in `eventTypes` or call an endpoint to request it:
 
 ```text
 event: gap
@@ -142,6 +142,8 @@ data: {"droppedEvents":17}
 ```
 
 This control frame has no `id:`. `droppedEvents` is the number discarded since the previous notice, not a lifetime total. It indicates lost delivery on this connection; it is not a guarantee that all other forms of missed history will be reported.
+
+`gap` does not replay changes missed between a REST snapshot and opening SSE. Address that race separately by [opening and buffering SSE before loading REST, then reconciling ordering](/guides/streaming/recovery#rest-initialization-with-buffered-updates).
 
 On `gap`, mark affected state as needing repair, start REST resynchronization, and buffer further messages within a bounded budget until you can apply them to refreshed state. If the application is persistently falling behind, narrow filters or improve processing rather than repeatedly reconnecting into the same overload.
 
@@ -155,4 +157,4 @@ For a new connection rejected with `401`, create a fresh subscription with your 
 
 Close unused streams explicitly: `EventSource.close()` in browsers, `AbortController.abort()` for `fetch`, or close the HTTP response/context in Python. Closing the connection releases that consumer; no public delete-subscription operation is required for cleanup.
 
-Next: [Complete lifecycle samples](https://docs.unabated.com/guides/streaming/lifecycle) or [NFL model-specific state rules](https://docs.unabated.com/guides/streaming/models).
+Next: [Complete lifecycle samples](/guides/streaming/lifecycle).
