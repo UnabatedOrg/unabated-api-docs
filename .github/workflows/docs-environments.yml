@@ -1,0 +1,27 @@
+name: Validate documentation environments
+
+on:
+  pull_request:
+    paths:
+      - scalar-docs/**
+      - scripts/validate-docs-environments.py
+      - .github/workflows/docs-environments.yml
+  push:
+    branches: [dev, main]
+    paths:
+      - scalar-docs/**
+      - scripts/validate-docs-environments.py
+      - .github/workflows/docs-environments.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 scripts/validate-docs-environments.py
