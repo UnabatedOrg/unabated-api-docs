@@ -35,7 +35,7 @@ The snapshot feature is server-controlled. If disabled, `includeSnapshot: true` 
 
 </scalar-callout>
 
-`ready: true` does not assert that every possible market is present, or that the snapshot is a transactionally frozen view of all sources. The store is maintained from live updates and periodically refreshed. Treat the snapshot as current matching line state, continue comparing line versions, and repair missing or inconsistent data with REST. It does not replace event, team, player, or deep-link discovery.
+`ready: true` does not assert that every possible market is present, or that the snapshot is a transactionally frozen view of all sources. The store is maintained from live updates and periodically refreshed. Treat the snapshot as current matching line state, continue comparing line versions, and repair missing or inconsistent data with REST. It does not replace event, team, or player discovery, or link generation where your API tier supports it.
 
 ## REST initialization with buffered updates
 
@@ -43,7 +43,7 @@ Open SSE and begin buffering updates **before** loading REST to address the snap
 
 1. Create a narrowly filtered subscription and open its returned signed URL.
 2. Once the connection opens, begin buffering incoming application events, then fetch the relevant REST odds and event data.
-3. Build indexes keyed by `marketLineId` and `eventId` from the REST response. Retain its deep links and descriptive metadata alongside their selection points.
+3. Build indexes keyed by `marketLineId` and `eventId` from the REST response. Retain descriptive metadata and any returned deep links alongside their selection points; a link is not required to initialize the odds store.
 4. Apply the buffered events with the same ordering checks you will use during live delivery.
 5. Switch to live processing and continue to repair gaps or missing metadata from REST.
 
@@ -62,11 +62,11 @@ For the same market-line identity:
 - Equal ordering values can still carry meaningful changes. Do not use “equal version” alone to ignore a status, liquidity, alternate, or freshness update.
 - When ordering information is missing, use cautious processing and periodic REST reconciliation. Arrival order across reconnects is not proof of source freshness.
 - Merge explicit streaming fields into the existing record; preserve unrelated REST-only fields. Process explicit nulls instead of treating them as missing fields.
-- Retain the previous `deepLink` only for the same selection with unchanged points. The URL encodes points, so invalidate and refetch it whenever points change, including on an alternate. Do not publish a previous-points URL with an updated line.
+- Retain a previous `deepLink` only for the same selection with unchanged points. The URL encodes points, so invalidate it whenever points change, including on an alternate. Obtain a matching replacement through a workflow available to your API tier before publishing a link. Do not publish a previous-points URL with an updated line.
 
-When a replacement-link fetch finishes, verify that its selection points still match your current local line before attaching it. Another SSE update can move the points while the REST request is in flight.
+Concierge API does not include `GET /deeplink`; its odds store must continue to collect data without a link. When a replacement-link fetch is available and finishes, verify that its selection points still match your current local line before attaching it. Another SSE update can move the points while the REST request is in flight.
 
-A minimal update guard looks like this. It invalidates links for changed selection points and merges each alternate independently. Integrate REST refetch scheduling and your hierarchy indexes around it; do not publish records with missing links until you have retrieved the correct selection URL:
+A minimal update guard looks like this. It invalidates links for changed selection points and merges each alternate independently. Integrate REST synchronization and your hierarchy indexes around it. If your API tier supports link generation, schedule replacement-link requests as needed; publish a link only after retrieving the correct selection URL:
 
 ```javascript
 const linesById = new Map();
@@ -86,7 +86,7 @@ function mergeSelection(previous, incoming) {
     Object.hasOwn(previous, "points") && Object.hasOwn(incoming, "points") &&
     previous.points === incoming.points;
   if (!unchangedPoints) {
-    // SSE carries no replacement URL. Fetch matching REST data before publishing.
+    // SSE carries no replacement URL. A new link requires a supported workflow.
     delete next.deepLink;
   }
   if (Array.isArray(incoming.alternateLines)) {

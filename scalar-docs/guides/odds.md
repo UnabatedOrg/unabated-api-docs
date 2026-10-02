@@ -47,7 +47,7 @@ Dictionary keys group data for efficient access. Use fields such as `eventId`, `
 
 ### Extract available selections
 
-These examples request one board and print selections with deep links. They do not place bets. Set `UNABATED_API_KEY` securely. Override the league or market type with values you have discovered.
+These examples request one board and print available selections, including a deep link when one is returned. A missing link does not prevent odds collection. They do not place bets. Set `UNABATED_API_KEY` securely. Override the league or market type with values you have discovered.
 
 <scalar-tabs>
 <scalar-tab title="JavaScript">
@@ -76,7 +76,7 @@ for (const league of Object.values(body.data?.odds ?? {})) {
       for (const group of Object.values(groups ?? {})) {
         for (const side of Object.values(group.sides ?? {})) {
           for (const line of Object.values(side.marketSourceLines ?? {})) {
-            if (line.statusId !== 1 || line.disabled || !line.deepLink) continue;
+            if (line.statusId !== 1 || line.disabled) continue;
             console.log({
               event: group.eventName, eventId: group.eventId,
               betTypeId: group.betTypeId, periodTypeId: period.periodTypeId,
@@ -117,7 +117,7 @@ for league in ((body.get('data') or {}).get('odds') or {}).values():
             for group in (period.get(phase) or {}).values():
                 for side in (group.get('sides') or {}).values():
                     for line in (side.get('marketSourceLines') or {}).values():
-                        if line.get('statusId') != 1 or line.get('disabled') or not line.get('deepLink'):
+                        if line.get('statusId') != 1 or line.get('disabled'):
                             continue
                         print({
                             'event': group.get('eventName'),
@@ -128,7 +128,7 @@ for league in ((body.get('data') or {}).get('odds') or {}).values():
                             'lineId': line.get('marketLineId'),
                             'points': line.get('points'),
                             'price': line.get('price'),
-                            'deepLink': line['deepLink'],
+                            'deepLink': line.get('deepLink'),
                         })
 ```
 
@@ -141,7 +141,7 @@ for league in ((body.get('data') or {}).get('odds') or {}).values():
 
 `alternateLines` contains alternate points/prices for the selection. Read each alternate's own `points`, `price`, status, and `deepLink`. Do not attach the main line's URL to an alternate with different points.
 
-Use the returned `deepLink` when available. For Free content partners, add the partner code before publishing; the [deep-link guide](/guides/deep-links) shows the complete process. A link resolves the destination at click time; the sportsbook can have changed its price or availability since your response.
+Use the returned `deepLink` when available. The separate `GET /deeplink` generation endpoint is available to Free API and Enterprise API, not Concierge API; Concierge integrations can display odds without calling it. For Free content partners, add the partner code before publishing; the [deep-link guide](/guides/deep-links) shows the complete process. A link resolves the destination at click time; the sportsbook can have changed its price or availability since your response.
 
 ## Freshness and empty boards
 

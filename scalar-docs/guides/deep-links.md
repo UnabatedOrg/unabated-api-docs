@@ -1,6 +1,6 @@
 # Publish and test tracked deep links
 
-**Available for: Free API · Concierge API · Enterprise API.** Standard deep links cover the sportsbooks available for your API tier. Partner attribution is required to receive credit for Free API content partner traffic.
+**Available for: Free API · Enterprise API.** Standard deep links cover the sportsbooks available for your API tier. Concierge API does not include `GET /deeplink` or the bet-slip generation and status workflow. Partner attribution is required to receive credit for Free API content partner traffic.
 
 A deep link opens a sportsbook with a specific selection or bet slip. Use the link returned by the API; do not construct a sportsbook's private URL format yourself. Destination availability and prices can change before a user opens the link.
 
@@ -89,7 +89,7 @@ Use the code exactly as shown in key management. It is a public tracking identif
 
 ## Generate a standard deep link from line IDs
 
-`GET /deeplink` accepts comma-separated market line IDs and an optional matching list of points. Use IDs and points from your current odds response.
+`GET /deeplink` is available to Free API and Enterprise API, not Concierge API. It accepts comma-separated market line IDs and an optional matching list of points. Use IDs and points from your current odds response.
 
 Set `UNABATED_API_BASE_URL` explicitly to the [API base URL](/start/authentication#api-base-url), `https://data.unabated.com`. The example stops if it is missing.
 
@@ -104,11 +104,11 @@ curl --fail-with-body --connect-timeout 5 --max-time 20 --get \
 
 Use `_` for a selection without points when supplying a list of point values. If `points` is supplied, its item count must match `ids`. For Free callers, the operation supports at most 20 selections, all from the same included sportsbook, and returns a generic Gambly URL in `data.url` and `data.individualUrls`. Add your partner code before publishing that URL.
 
-Invalid IDs or mismatched lists can produce `400`; a missing selection can produce `404`; a book outside Free API coverage can produce `403`. Same-game parlay pricing and generation are available for Enterprise API.
+Invalid IDs or mismatched lists can produce `400`; a missing selection can produce `404`; a Concierge API key or a book outside Free API coverage can produce `403`. Same-game parlay pricing and generation are available for Enterprise API.
 
 ## Generated bet-slip links
 
-The [bet-slip generation workflow](/guides/bet-slips) returns its own links. For Free content partner requests, generation carries your partner attribution into those links. Publish the returned bet-slip URLs as provided. The manual suffix step above applies to generic `/deeplink/odds/` URLs from odds or standard deep-link responses.
+The [bet-slip generation workflow](/guides/bet-slips), available to Free API and Enterprise API, returns its own links. For Free content partner requests, generation carries your partner attribution into those links. Publish the returned bet-slip URLs as provided. The manual suffix step above applies to generic `/deeplink/odds/` URLs from odds or standard deep-link responses.
 
 ## Verify from your site
 

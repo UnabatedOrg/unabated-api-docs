@@ -2,7 +2,7 @@
 
 **Available for: Free API · Concierge API · Enterprise API.** The five-second odds interval below applies to Free API keys; other limits depend on your API tier.
 
-Check the HTTP status first. For endpoints using the public envelope, also check `success` and `messages` before reading `data`. Bet-slip operations use a direct status object instead; see their [lifecycle guide](/guides/bet-slips).
+Check the HTTP status first. For endpoints using the public envelope, also check `success` and `messages` before reading `data`. Bet-slip operations, available to Free API and Enterprise API, use a direct status object instead; see their [lifecycle guide](/guides/bet-slips).
 
 ## Know what the response means
 
@@ -19,6 +19,8 @@ Check the HTTP status first. For endpoints using the public envelope, also check
 | HTTP success with bet-slip `status: "error"` or `"Error"` | Generation/status processing failed | Read `details` and `message`; stop the lifecycle rather than polling indefinitely |
 
 Error bodies are not all the same shape. Middleware can return a `message` object; some operations return plain text or framework validation errors. Inspect status and content type before assuming every error has a `data` envelope.
+
+Concierge API does not include `GET /deeplink`, `POST /api/v1/bet/generate`, or `GET /api/v1/bet/status/{guid}`. A `403` from these operations is an access restriction, not a reason to retry; Concierge REST odds and SSE remain available within their documented scope.
 
 ## Free odds: one scheduler per key
 

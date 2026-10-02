@@ -4,7 +4,7 @@
   const streamingPrompt = 'Create a filtered SSE subscription and open its returned signed streamUrl. Treat signed URLs as private and never log them. Buffer incoming updates while loading the latest REST odds snapshot, then reconcile by stable IDs and ordering fields before applying buffered updates. On disconnect, reconnect with bounded backoff; create a new subscription if the signed URL has expired. Restore current state from a fresh snapshot while buffering stream updates, then resume processing. Bound buffers and timeouts, repair uncertain continuity with REST, and close the stream on shutdown. Do not assume durable replay.';
   const prompts = {
     free: 'Build a server-side Unabated Free API integration. ' + commonPrompt + ' Poll REST odds no more than once every five seconds per API key across all odds endpoints. Append my public utm_campaign partner code exactly once to every published Gambly deep link. Include a way to test a real link and confirm a tracked click. Free API does not include SSE.',
-    concierge: 'Build a server-side Unabated Concierge API integration for NFL, NBA, MLB, NHL, or WNBA. ' + commonPrompt + ' ' + streamingPrompt + ' Use the documented Concierge API data coverage.',
+    concierge: 'Build a server-side Unabated Concierge API integration for NFL, NBA, MLB, NHL, or WNBA. ' + commonPrompt + ' ' + streamingPrompt + ' Use the documented Concierge API data coverage. Concierge API does not include GET /deeplink, POST /api/v1/bet/generate, or GET /api/v1/bet/status/{guid}; do not call these operations or require a deep link to collect odds.',
     enterprise: 'Build a server-side Unabated Enterprise API integration. ' + commonPrompt + ' ' + streamingPrompt + ' Check the available tiers on each endpoint and use the leagues, sportsbooks, and additional data features provisioned for our integration.'
   };
   const tierNames = { free: 'Free API', concierge: 'Concierge API', enterprise: 'Enterprise API' };
@@ -17,7 +17,7 @@
   };
   const notes = {
     free: 'Free odds are delayed by at least 15 seconds. Make one odds request every five seconds per API key, shared across all odds endpoints.',
-    concierge: 'Concierge provides real-time odds and live streaming for NFL, NBA, MLB, NHL, and WNBA. Check each endpoint for available tiers.',
+    concierge: 'Concierge provides real-time odds and live streaming for NFL, NBA, MLB, NHL, and WNBA. Standard deep-link generation and bet-slip generation/status are not included.',
     enterprise: 'Enterprise supports additional data features. Check each endpoint for available tiers.'
   };
   const onboard = {

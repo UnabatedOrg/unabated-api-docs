@@ -1,6 +1,6 @@
 # Generate a bet slip
 
-**Available for: Free API · Concierge API · Enterprise API.** Results remain within your API tier's league and sportsbook coverage. Free API content partner requests are limited to included books and carry partner attribution.
+**Available for: Free API · Enterprise API.** Concierge API does not include `POST /api/v1/bet/generate` or `GET /api/v1/bet/status/{guid}`. Results remain within your API tier's league and sportsbook coverage. Free API content partner requests are limited to included books and carry partner attribution.
 
 Turn a text description or image into matched sportsbook bet slips. Generation is asynchronous: submit content, keep the returned request ID, and poll for the result. A successful submission does not mean every requested leg has matched.
 

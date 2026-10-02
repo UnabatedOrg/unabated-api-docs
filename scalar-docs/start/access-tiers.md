@@ -1,6 +1,6 @@
 # Choose your API access
 
-Build with REST odds, sportsbook deep links, and generated bet slips. Add live streaming or contracted datasets when your project needs them. These guides serve humans and agents alike; each endpoint identifies its available API tiers.
+Build with REST odds and the workflows included in your API tier. Free API and Enterprise API support standard deep-link and bet-slip generation; Concierge API provides live odds and streaming. These guides serve humans and agents alike; each endpoint identifies its available API tiers.
 
 | Capability | Free API | Concierge API | Enterprise API |
 | --- | --- | --- | --- |
@@ -8,8 +8,8 @@ Build with REST odds, sportsbook deep links, and generated bet slips. Add live s
 | Sports | Supported sports with available included-book data | NFL, NBA, MLB, NHL, WNBA | As contracted |
 | Sportsbooks | Included provider set | All books within the five supported leagues | As contracted |
 | Odds polling | One request every five seconds per key, shared across odds endpoints | Subject to your access policy | Subject to your access policy |
-| Standard deep links | Included | Available | Available |
-| Bet-slip generation and status | Included | Available | Available |
+| Standard deep-link generation (`GET /deeplink`) | Included | Not included | Available |
+| Bet-slip generation and status | Included | Not included | Available |
 | Server-Sent Events (SSE) | Not included | Included | Available |
 | NBA news and additional datasets | Not included | Not included | As contracted |
 | NFL in-game output model | Not included | Not included | As contracted |
@@ -32,6 +32,8 @@ Free odds have a minimum delay of 15 seconds. Snapshot publication, transport, a
 
 Manage keys at [Manage API Keys](https://tools.unabated.com/api-keys). Concierge API access covers NFL, NBA, MLB, NHL, and WNBA, including all books within that coverage and live odds streaming.
 
+Concierge API does not include `GET /deeplink`, `POST /api/v1/bet/generate`, or `GET /api/v1/bet/status/{guid}`. These operations are available to Free API and Enterprise API. Concierge integrations can collect REST odds and consume SSE without calling them.
+
 Concierge takes precedence while active. If you started as a Free content partner and later upgrade, your partner information remains; your effective API scope follows Concierge. If Concierge ends, an existing Free enrollment can provide Free access again.
 
 ## Enterprise API: match the data to your integration
@@ -44,5 +46,5 @@ Enterprise API coverage follows your agreement, including leagues, books, stream
 
 - [Make your first request](/start/quickstart).
 - [Keep your key secure](/start/authentication).
-- [Publish and test a tracked link](/guides/deep-links).
+- [Publish and test a tracked link with Free API or Enterprise API](/guides/deep-links).
 - [Connect a live stream with Concierge API or Enterprise API](/guides/streaming/lifecycle).

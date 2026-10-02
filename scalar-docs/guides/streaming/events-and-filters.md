@@ -131,7 +131,7 @@ This is illustrative sample output. Fields depend on the line and your API tier'
 - Reject stale line updates using `sequenceNumber` and/or `modifiedOn`. Neither the SSE frame `id` nor `messageId` is a numeric ordering value.
 - Apply `disabled`, `statusId`, `freshnessExpiresAt`, liquidity, and alternate-line changes even when price and points remain unchanged.
 - A streaming `null` can explicitly clear a field. Do not drop all null-valued fields while merging.
-- Preserve unrelated REST-only metadata. Retain a `deepLink` for price or status changes only when the selection's points remain unchanged. If points change, invalidate and refetch its link; apply this rule to each alternate too. The stream does not resend deep links with updates.
+- Preserve unrelated REST-only metadata. Retain a returned `deepLink` for price or status changes only when the selection's points remain unchanged. If points change, invalidate the link and obtain a replacement through a workflow available to your API tier before publishing it; apply this rule to each alternate too. Concierge API does not include `GET /deeplink`, and a link is not required to collect odds. The stream does not resend deep links with updates.
 
 Market-line status is a protocol enum: `1` Available, `2` Unavailable, `3` PriceUnknown. `disabled: true` also means the line should not be offered as an available wager. `freshnessExpiresAt`, when present, is a UTC freshness boundary for the line; stop presenting an expired quote as current.
 

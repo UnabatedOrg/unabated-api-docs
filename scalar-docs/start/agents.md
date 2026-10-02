@@ -21,7 +21,7 @@ The [OpenAPI specification](https://data.unabated.com/swagger/v1/swagger.json) i
 4. Serialize Free odds requests through one scheduler per API key. The five-second interval is shared across odds endpoints; honor `Retry-After` after a `429`.
 5. Read structured odds fields rather than parsing composite dictionary keys. Preserve IDs, prices, points, timestamps, and selection context.
 6. For a Free partner, add the partner code to returned generic Gambly links and test from the partner's own platform. Do not guess a sportsbook destination or fabricate a selection URL.
-7. Use SSE with Concierge API or Enterprise API. Check each endpoint's available API tiers before requesting data.
+7. Use SSE with Concierge API or Enterprise API. Concierge API does not include `GET /deeplink`, `POST /api/v1/bet/generate`, or `GET /api/v1/bet/status/{guid}`; those operations are available to Free API and Enterprise API. Check each endpoint's available API tiers before requesting data.
 8. Use bounded retries and request timeouts. Report an unavailable API tier or unsupported data request rather than attempting to work around it.
 
 ## Example prompts
@@ -49,13 +49,16 @@ and discover filter IDs,
 create a subscription, connect to its signed URL, and maintain current
 state according to the documented snapshot, ordering, and recovery rules.
 Use event families available for our API tier. Redact signed URLs and keys
-from logs, retain existing deep links across price-only updates, and close
-streams on shutdown. Confirm our API tier and data coverage before running.
+from logs. Preserve a returned deep link only while its selection points
+remain unchanged; odds collection must also work without a link. For
+Concierge, do not call /deeplink or bet-slip generation/status endpoints.
+Close streams on shutdown. Confirm our API tier and data coverage before running.
 ```
 
-### Generate a bet slip
+### Generate a bet slip with Free API or Enterprise API
 
 ```text
+Use a Free API or Enterprise API key; Concierge API does not include this workflow.
 Use https://data.unabated.com. Use POST /api/v1/bet/generate with content.text, then poll the returned
 requestId using GET /api/v1/bet/status/{guid}. Check both HTTP failures
 and the body's processing status. Stop on Complete or Error, enforce
@@ -66,4 +69,4 @@ will remain unchanged when the user reaches the sportsbook.
 
 ## Useful completion checks
 
-A working integration should demonstrate a successful response, a handled invalid-key or denied-feature response, controlled polling, a real returned deep link, and safe credential handling. For a Free partner, verify click attribution on the key management page after opening the published link. For streaming, demonstrate cleanup and recovery using the documented state rules.
+A working integration should demonstrate a successful response, a handled invalid-key or denied-feature response, controlled polling, and safe credential handling. For a Free API or Enterprise API link workflow, also demonstrate a real returned deep link. For a Free partner, verify click attribution on the key management page after opening the published link. For streaming, demonstrate cleanup and recovery using the documented state rules; a Concierge odds integration does not require a deep link or generated bet slip.
