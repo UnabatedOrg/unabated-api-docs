@@ -1,6 +1,6 @@
 # Choose your API access
 
-Build with REST odds, sportsbook deep links, and generated bet slips. Add live streaming or contracted datasets when your project needs them. These guides serve humans and agents alike; each endpoint identifies its available tiers and any additional entitlement.
+Build with REST odds, sportsbook deep links, and generated bet slips. Add live streaming or contracted datasets when your project needs them. These guides serve humans and agents alike; each endpoint identifies its available API tiers.
 
 | Capability | Free API | Concierge API | Enterprise API |
 | --- | --- | --- | --- |
@@ -8,13 +8,13 @@ Build with REST odds, sportsbook deep links, and generated bet slips. Add live s
 | Sports | Supported sports with available included-book data | NFL, NBA, MLB, NHL, WNBA | As contracted |
 | Sportsbooks | Included provider set | All books within the five supported leagues | As contracted |
 | Odds polling | One request every five seconds per key, shared across odds endpoints | Subject to your access policy | Subject to your access policy |
-| Standard deep links | Included | With the deep-link feature entitlement | With the deep-link feature entitlement |
-| Bet-slip generation and status | Included | With the bet-slip feature entitlement | With the bet-slip feature entitlement |
-| Server-Sent Events (SSE) | Not included | Included for entitled events and data | With entitlement |
-| NBA news, projections, additional datasets | Not included | Requires the relevant feature entitlement | Requires the relevant feature entitlement |
-| NFL in-game output model | Not included | Not included by default | Requires explicit model entitlement |
+| Standard deep links | Included | Available | Available |
+| Bet-slip generation and status | Included | Available | Available |
+| Server-Sent Events (SSE) | Not included | Included | Available |
+| NBA news and additional datasets | Not included | Not included | As contracted |
+| NFL in-game output model | Not included | Not included | As contracted |
 
-Tier availability describes the product scope. A key must also have the endpoint's feature permission, and results remain within its league and sportsbook scope. An empty board can mean there are no available offers within that scope; a discovery result does not promise that every book offers every market.
+Results remain within your API tier's league and sportsbook coverage. Enterprise API datasets follow your agreement. An empty board can mean there are no available offers within that coverage; a discovery result does not promise that every book offers every market.
 
 ## Free API: become a content partner
 
@@ -30,19 +30,19 @@ Free odds have a minimum delay of 15 seconds. Snapshot publication, transport, a
 
 ## Concierge API: live professional sports
 
-Manage keys at [Manage API Keys](https://tools.unabated.com/api-keys). Concierge API access covers NFL, NBA, MLB, NHL, and WNBA, including all books within that scope and live streaming for entitled event families.
+Manage keys at [Manage API Keys](https://tools.unabated.com/api-keys). Concierge API access covers NFL, NBA, MLB, NHL, and WNBA, including all books within that coverage and live odds streaming.
 
 Concierge takes precedence while active. If you started as a Free content partner and later upgrade, your partner information remains; your effective API scope follows Concierge. If Concierge ends, an existing Free enrollment can provide Free access again.
 
 ## Enterprise API: match the data to your integration
 
-Enterprise access is provisioned according to your agreement. Leagues, books, streams, and additional features are explicitly entitled. The NFL in-game output model requires its own entitlement; an API key does not receive it merely because it can stream ordinary odds.
+Enterprise API coverage follows your agreement, including leagues, books, streams, and additional datasets. The NFL in-game output model is available through Enterprise API; it is not part of Free API or Concierge API.
 
-Contact your Unabated representative to confirm the required datasets and permissions before building against an additional feature.
+Contact your Unabated representative to confirm which datasets your Enterprise API agreement includes before building your integration.
 
 ## Next steps
 
 - [Make your first request](/start/quickstart).
 - [Keep your key secure](/start/authentication).
 - [Publish and test a tracked link](/guides/deep-links).
-- [Connect an entitled live stream](/guides/streaming/lifecycle).
+- [Connect a live stream with Concierge API or Enterprise API](/guides/streaming/lifecycle).

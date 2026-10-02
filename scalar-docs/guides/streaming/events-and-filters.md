@@ -14,7 +14,6 @@ Specify the event families your application actually consumes. Omitted or empty 
   "marketTypeIds": [1],
   "marketSourceIds": [7],
   "betTypeIds": [1, 2, 3],
-  "projectionSourceIds": [],
   "includeSnapshot": false
 }
 ```
@@ -29,12 +28,11 @@ These are sample IDs, not a current list of available leagues or books. Use `GET
 | `marketTypeIds` | `int[]` | Limits market-line updates and snapshots by market type. |
 | `marketSourceIds` | `long[]` | Limits source-scoped messages and the lines/alternates within market-line updates and snapshots. |
 | `betTypeIds` | `long[]` | Limits market-line updates and snapshots, and market metadata updates. |
-| `projectionSourceIds` | `long[]` | Limits `projection_set_update` by projection source. |
 | `includeSnapshot` | `boolean` | Requests initial market-line snapshot chunks when the server snapshot feature is enabled; defaults to `false`. |
 
-Omitted or empty dimension arrays request no additional client filter **within your authorized scope**. They do not grant more data. The server can narrow requested filters to your key's effective scope; an empty effective authorized set is not an all-data wildcard.
+Omitted or empty dimension arrays request no additional client filter **within your API tier's data coverage**. The server can narrow requested filters to that coverage. An empty resulting set is not an all-data wildcard.
 
-Unknown league, market type, market source, or bet type values can return `400`. A valid subscription can also receive no messages when no authorized data matches. Do not repeatedly widen filters or retry entitlement errors as a way to obtain unavailable data.
+Unknown league, market type, market source, or bet type values can return `400`. A valid subscription can also receive no messages when no available data matches. Check your API tier after a `403`; widening filters or repeating requests does not change the tier's coverage.
 
 <scalar-callout type="warning">
 
@@ -52,12 +50,11 @@ Data event payloads use a `data` envelope with a camel-case root. Snapshot compl
 | `event_update` | `data.eventUpdate` | Event state, clock, scores, timing, and metadata. Concierge API and Enterprise API within scope. |
 | `market_update` | `data.marketUpdate` | Market lifecycle and metadata. Concierge API and Enterprise API within scope. |
 | `market_source_update` | `data.marketSourceUpdate` | Sportsbook or market-source metadata. Concierge API and Enterprise API within scope. |
-| `projection_set_update` | `data.projectionSetUpdate` | Projection-source refresh notification. Additional feature availability follows your Enterprise API agreement. |
-| `in_game_fair_price_update` | `data.inGameFairPriceUpdate` | NFL model state. **Enterprise API with explicit NFL in-game model access only.** |
-| `event_lineup` | `data.eventLineup` | Lineup update. Additional feature availability follows your Enterprise API agreement. |
-| `player_news` | `data.playerNews` | Player-news update. Additional feature availability follows your Enterprise API agreement. |
-| `player_percent_to_play` | `data.playerPercentToPlay` | Player availability update. Additional feature availability follows your Enterprise API agreement. |
-| `play_by_play` | `data.playByPlay` | Play-by-play state. Additional feature availability follows your Enterprise API agreement. |
+| `in_game_fair_price_update` | `data.inGameFairPriceUpdate` | NFL model state. Enterprise API. |
+| `event_lineup` | `data.eventLineup` | Lineup update. Enterprise API. |
+| `player_news` | `data.playerNews` | Player-news update. Enterprise API. |
+| `player_percent_to_play` | `data.playerPercentToPlay` | Player availability update. Enterprise API. |
+| `play_by_play` | `data.playByPlay` | Play-by-play state. Enterprise API. |
 | `market_line_snapshot` | `data.marketLineUpdate` | Requested initial market-line snapshot chunk; same line shape as a market-line update. |
 | `market_line_snapshot_complete` | top-level `lineCount`, `sequence`, `ready` | Initial snapshot completion/readiness control frame. |
 | `gap` | top-level `droppedEvents` | The current connection discarded queued events because the consumer fell behind. Repair state from REST. |
@@ -66,17 +63,16 @@ The control event names cannot be used as ordinary subscription event types. Req
 
 ## Filter applicability
 
-| Family | League | Event ID | Market type | Market source | Bet type | Projection source |
-| --- | --- | --- | --- | --- | --- | --- |
-| Market-line updates and snapshots | Yes | Yes, within lines | Yes | Yes, within lines and alternates | Yes, within lines | No |
-| Event updates | Yes | No | No | No | No | No |
-| Market updates | Yes | No | No | No | Yes | No |
-| Market-source updates | No | No | No | Yes | No | No |
-| Projection-set updates | No | No | No | No | No | Yes |
-| NFL in-game fair-price updates | Yes | No | No | No | No | No |
-| Lineups, player news, percent-to-play, play-by-play | League-scoped where metadata is present | No | No | No | No | No |
+| Family | League | Event ID | Market type | Market source | Bet type |
+| --- | --- | --- | --- | --- | --- |
+| Market-line updates and snapshots | Yes | Yes, within lines | Yes | Yes, within lines and alternates | Yes, within lines |
+| Event updates | Yes | No | No | No | No |
+| Market updates | Yes | No | No | No | Yes |
+| Market-source updates | No | No | No | Yes | No |
+| NFL in-game fair-price updates | Yes | No | No | No | No |
+| Lineups, player news, percent-to-play, play-by-play | League-scoped where metadata is present | No | No | No | No |
 
-Authorization can impose additional scope even on families without a user-specified filter dimension. For example, a restricted key cannot use a metadata notification to opt into unauthorized data.
+Your API tier's data coverage applies even to event families without a user-specified filter dimension. A metadata notification does not expand that coverage.
 
 ## Market-line updates
 
@@ -128,7 +124,7 @@ One frame can contain multiple lines:
 }
 ```
 
-This is illustrative sample output. Fields depend on the line and your feature permissions; additional fields may appear.
+This is illustrative sample output. Fields depend on the line and your API tier's datasets; additional fields may appear.
 
 - Identify a source line by `marketLineId`. Use `marketSourceId` and market metadata to associate it with the correct book and selection.
 - Use `marketLineKey` as a location hint into the REST hierarchy; do not parse its segments to derive league, book, or betting semantics.
@@ -212,27 +208,6 @@ Identify the event by `eventId` and reject older `modifiedOn` values when availa
 `data.marketUpdate` contains `leagueId`, `updateType`, and `market`, plus message/correlation IDs. Use the identifiers inside `market` to locate its event and selection; preserve the documented lifecycle state rather than assuming every message means a new active market.
 
 `data.marketSourceUpdate` contains `marketSource`, plus message/correlation IDs. Use `marketSource.id` as the stable book/source identifier. Changes can include active state or separate straight, props, and futures availability.
-
-</scalar-detail>
-
-<scalar-detail title="Projection refresh notifications">
-
-`projection_set_update` is a notification, not the full projection set:
-
-```json
-{
-  "data": {
-    "projectionSetUpdate": {
-      "sourceId": 123,
-      "updatedAt": "2026-10-01T15:00:00Z",
-      "correlationId": null,
-      "messageId": "33a224985bed44849a4641ba9fdba59b0"
-    }
-  }
-}
-```
-
-If your Enterprise API agreement includes that projection feature, retrieve the corresponding set through its documented REST route. A notification does not confer access to a separately gated REST feature.
 
 </scalar-detail>
 

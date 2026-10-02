@@ -1,6 +1,6 @@
 # Handle errors and request limits
 
-**Available for: Free API · Concierge API · Enterprise API.** The five-second odds interval below applies to Free keys; additional policies and entitlements depend on your access.
+**Available for: Free API · Concierge API · Enterprise API.** The five-second odds interval below applies to Free API keys; other limits depend on your API tier.
 
 Check the HTTP status first. For endpoints using the public envelope, also check `success` and `messages` before reading `data`. Bet-slip operations use a direct status object instead; see their [lifecycle guide](/guides/bet-slips).
 
@@ -9,8 +9,8 @@ Check the HTTP status first. For endpoints using the public envelope, also check
 | Signal | Meaning | Recovery |
 | --- | --- | --- |
 | `400` | Invalid request, identifier, parameter, or body | Correct the input; check the operation schema and discovery data |
-| `401` | Authentication missing or invalid | Check the header, correct environment, active key, and account access |
-| `403` | Endpoint, feature, book, or scope is not permitted | Check the endpoint's tier/feature requirements; repeating the call does not grant access |
+| `401` | Authentication missing or invalid | Check the header, correct environment, and active key |
+| `403` | Endpoint or data is unavailable for your API tier or Enterprise API agreement | Check the endpoint's available tiers and data coverage; repeating the call does not change your tier |
 | `404` | The requested resource or selection was not found, where emitted by that operation | Refresh the relevant data and use a current identifier |
 | `429` | Free odds request arrived before the key's next allowed interval | Wait for `Retry-After`; coordinate all odds calls using that key |
 | `503` | Odds access or the delayed snapshot is temporarily unavailable | Respect `Retry-After` and use bounded backoff |

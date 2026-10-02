@@ -6,7 +6,7 @@ Create a subscription, open its signed URL, and handle named SSE frames. These e
 
 ## Before you run
 
-Use an API key with SSE access. Free API keys return `403` for this workflow. Discover a league ID from `GET /league`, and choose one within your key's scope. Choose production (`https://data.unabated.com`) or sandbox (`https://data-sandbox.unabated.com`), then set the following variables privately in your shell:
+Use a Concierge API or Enterprise API key. Free API keys return `403` for this workflow. Discover a league ID from `GET /league`, and choose one within your API tier's sports coverage. Choose production (`https://data.unabated.com`) or sandbox (`https://data-sandbox.unabated.com`), then set the following variables privately in your shell:
 
 ```bash
 read -r -p "Intended API base URL: " UNABATED_API_BASE_URL
@@ -410,11 +410,11 @@ Native `EventSource` handles the SSE framing and its usual reconnect behavior. I
 | --- | --- |
 | `400` at creation | Check event names and discovered filter IDs. Correct the request. |
 | `401` at creation | Check the API key. Do not attempt the stream without a successful subscription response. |
-| `403` at creation | Verify SSE/feature access. Free API and default model requests are not eligible. |
+| `403` at creation | SSE is available for Concierge API and Enterprise API. Check the requested event family's available tiers; NFL in-game models are Enterprise API only. |
 | `404` | The SSE feature can be disabled on that environment. Confirm the correct API environment. |
 | `400` at stream admission | The subscription ID does not match its signed token. Use the returned URL unchanged. |
 | `401` at stream admission | The signed token is invalid or expired. Create a new subscription with a valid key. |
-| `403` at stream admission | Current key or feature access no longer permits the subscription. Fix access. |
+| `403` at stream admission | Verify that the key is active and your API tier still covers the subscription's data. |
 | Temporary `5xx`, network failure, or ended stream | Retry with bounded backoff, and repair uncertain state from REST. |
 | `200` with only comments | The connection is alive, but no matching updates may be occurring. Check scope/filters; do not assume every game continuously changes. |
 | `gap` control event | Some delivery was lost. Resynchronize state; an open connection is not enough. |

@@ -1,6 +1,6 @@
 # Request and read odds
 
-**Available for: Free API · Concierge API · Enterprise API.** Free odds are delayed by at least 15 seconds and limited to included books. Concierge covers NFL, NBA, MLB, NHL, and WNBA with live data. Enterprise scope follows your entitlements.
+**Available for: Free API · Concierge API · Enterprise API.** Free API odds are delayed by at least 15 seconds and limited to included books. Concierge API covers NFL, NBA, MLB, NHL, and WNBA with live data. Enterprise API coverage follows your agreement.
 
 `GET /market/{league}/{marketType}/odds`
 

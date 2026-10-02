@@ -1,6 +1,6 @@
 # Understand the response
 
-**Available for: Free API · Concierge API · Enterprise API.** Fields and datasets can be omitted when not part of your key's entitlement.
+**Available for: Free API · Concierge API · Enterprise API.** Fields and datasets can be omitted when not part of your API tier's data coverage.
 
 The API uses structured identifiers, grouped odds, and explicit status fields. Read those fields directly and preserve their relationships in your integration.
 
@@ -80,7 +80,7 @@ Also inspect `disabled` and the presence of the required price/link fields. Do n
 
 Source-specific price, format, and liquidity fields can vary across providers. Use `sourceFormat` and the reference schema when interpreting `sourcePrice`. Do not turn an omitted price into zero or assume that omitted liquidity means no liquidity.
 
-Null fields can be omitted from JSON. Entitlement-controlled fields may be absent, and partner/source metadata can be absent when no mapping exists. Clients should tolerate missing optional fields and additional fields while still checking required contract values.
+Null fields can be omitted from JSON. Fields outside your API tier's datasets may be absent, and partner/source metadata can be absent when no mapping exists. Clients should tolerate missing optional fields and additional fields while still checking required contract values.
 
 ## Timestamps and ordering
 

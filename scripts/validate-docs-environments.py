@@ -171,12 +171,18 @@ def validate_content(config, config_path, errors):
     routes.update(redirect["from"] for redirect in config.get("siteConfig", {}).get("routing", {}).get("redirects", []) if ":" not in redirect["from"])
     routes.update({"/llms.txt", "/llms-full.txt"})
     deprecated = re.compile(r"web[ -]?sockets?|realtime\.(?:unabated|nimbeta|unibeta|unabeta)\.com", re.I)
+    internal_access = re.compile(r"\b(?:entitle\w*|privilege\w*)\b|\b(?:api|role):[a-z_]", re.I)
+    private_projections = re.compile(r"projectionSourceIds|projection_set_update|/projections?\b", re.I)
     for page in pages:
         if not page.is_file():
             continue  # Missing files are reported by the environment boundary checks.
         text = page.read_text(encoding="utf-8")
         if deprecated.search(text):
             errors.append(f"{page.name}: deprecated transport or host remains in published content")
+        if internal_access.search(text):
+            errors.append(f"{page.name}: public availability must use tier labels, without internal access details")
+        if private_projections.search(text):
+            errors.append(f"{page.name}: private projection feature remains in published content")
         if len(re.findall(r"^```", text, re.M)) % 2:
             errors.append(f"{page.name}: an authored code fence is not closed")
         links = re.findall(r"\]\((/[^\s)]+)\)", text) + re.findall(r'href="(/[^" ]+)"', text)

@@ -149,9 +149,9 @@ On `gap`, mark affected state as needing repair, start REST resynchronization, a
 
 An API-key-created subscription is currently valid for 24 hours. The creation response does not include an expiry field, so record when you created it and refresh the subscription before you depend on a longer-running connection. Do not decode signed tokens to build your client contract.
 
-The API checks current key/access state when admitting a stream and periodically while it is open. Revoked keys, lost permissions, or expired subscriptions can close the connection; the next admission can return `401` or `403`. An already-started `200` stream cannot change its HTTP status after headers are sent.
+The API checks the current key and API tier when admitting a stream and periodically while it is open. Revoked keys, changes to your API tier, or expired subscriptions can close the connection; the next admission can return `401` or `403`. An already-started `200` stream cannot change its HTTP status after headers are sent.
 
-For a new connection rejected with `401`, create a fresh subscription with your still-valid API key and repeat initialization. For `403`, fix the entitlement or key state; do not retry indefinitely. On token expiry, renew the subscription rather than repeatedly reopening the expired URL.
+For a new connection rejected with `401`, create a fresh subscription with your still-valid API key and repeat initialization. For `403`, confirm that the key is active and your API tier covers the request; do not retry indefinitely. On token expiry, renew the subscription rather than repeatedly reopening the expired URL.
 
 Close unused streams explicitly: `EventSource.close()` in browsers, `AbortController.abort()` for `fetch`, or close the HTTP response/context in Python. Closing the connection releases that consumer; no public delete-subscription operation is required for cleanup.
 

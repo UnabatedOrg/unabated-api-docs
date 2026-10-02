@@ -1,6 +1,6 @@
 # Discover leagues, books, and identifiers
 
-**Available for: Free API · Concierge API · Enterprise API.** Responses are subject to the key's scope; discovering an identifier does not grant additional data access.
+**Available for: Free API · Concierge API · Enterprise API.** Responses depend on your API tier's data coverage; discovering an identifier does not expand that coverage.
 
 Use discovery endpoints as the source of current IDs and names. This keeps your integration current as leagues, bet types, periods, and sportsbook coverage change.
 

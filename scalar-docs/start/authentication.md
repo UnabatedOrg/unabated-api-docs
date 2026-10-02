@@ -1,6 +1,6 @@
 # Authenticate with your API key
 
-**Available for: Free API · Concierge API · Enterprise API.** Endpoint and data access depend on your key's entitlements.
+**Available for: Free API · Concierge API · Enterprise API.** Endpoint and data availability depend on your API tier.
 
 Send your API key in the `X-Api-Key` request header. Use HTTPS and keep the key in your server's environment or secrets store.
 
@@ -30,7 +30,7 @@ Use the key and partner setup intended for the environment you are testing. Expo
 
 ## Get and manage keys
 
-Free content partners begin at [Free API signup](https://tools.unabated.com/free-api). Concierge subscribers use the existing key management page. Enterprise keys and feature scope follow your agreement.
+Free API content partners begin at [Free API signup](https://tools.unabated.com/free-api). Concierge API subscribers use the existing key management page. Enterprise API keys and dataset coverage follow your agreement.
 
 Self-service key management supports up to two active keys. To rotate safely, generate a second key, deploy it to your integration, verify requests, and then revoke the old key. A revoked key no longer authorizes new requests.
 
@@ -40,12 +40,12 @@ Do not put an API key in public browser JavaScript, a mobile application bundle,
 
 ## Signed stream URLs
 
-For Concierge or Enterprise streaming, create a subscription with your API-key header. The response supplies a signed stream URL. Connect to that returned URL as described in the [streaming guide](/guides/streaming/lifecycle); treat the URL as a temporary credential and do not log or publish it.
+For Concierge API or Enterprise API streaming, create a subscription with your API-key header. The response supplies a signed stream URL. Connect to that returned URL as described in the [streaming guide](/guides/streaming/lifecycle); treat the URL as a temporary credential and do not log or publish it.
 
 A browser `EventSource` can open the signed URL without putting your API key in the browser. Your backend should create the subscription and deliver the signed URL only to an authorized client. The signed URL is not a permanent replacement for a key.
 
-## Authentication is not feature access
+## Authentication and API tiers
 
-A `401` means authentication failed or is required. A `403` means the requested endpoint or feature is not permitted. Changing transport, requesting fewer filters, or retrying with the same key does not grant access. Check [access tiers](/start/access-tiers) and the endpoint's availability before trying again.
+A `401` means authentication failed or is required. A `403` means the requested endpoint or data is unavailable for your API tier or Enterprise API agreement. Check [access tiers](/start/access-tiers) and the endpoint's availability before trying again; changing transport or repeating the request does not change your tier.
 
 For successful HTTP responses, also inspect the body: endpoints using the public response envelope can return `success: false` with explanatory `messages`. See [errors and limits](/guides/errors-and-limits).
