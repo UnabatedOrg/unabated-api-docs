@@ -3,8 +3,8 @@
   "scalar": "2.0.0",
   "info": {
     "title": "Unabated API - Dev",
-    "description": "",
-    "version": "Version 0"
+    "description": "Market data for developers, content partners, and the agents helping them.",
+    "version": "v1"
   },
   "siteConfig": {
     "customDomain": "docs-sandbox.unabated.com",
@@ -15,396 +15,228 @@
     "head": {
       "title": "Unabated API - Sandbox",
       "links": [],
-      "meta": [],
-      "styles": [
+      "meta": [
         {
-          "path": "footer-theme.css"
+          "name": "description",
+          "content": "Market data for developers, content partners, and the agents helping them."
         }
       ],
-      "scripts": []
+      "styles": [
+        {
+          "path": "assets/docs.css"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "assets/docs.js",
+          "tagPosition": "bodyClose"
+        }
+      ]
     },
     "routing": {
-      "redirects": []
+      "redirects": [
+        {
+          "from": "/",
+          "to": "/start/quickstart"
+        },
+        {
+          "from": "/guide",
+          "to": "/start/quickstart"
+        },
+        {
+          "from": "/guide/getting-started",
+          "to": "/start/quickstart"
+        },
+        {
+          "from": "/guide/authorization",
+          "to": "/start/authentication"
+        },
+        {
+          "from": "/guide/b2b-api",
+          "to": "/guides/bet-slips"
+        },
+        {
+          "from": "/guide/code-examples/:pathMatch(.*)*",
+          "to": "/start/quickstart"
+        },
+        {
+          "from": "/guide/reference-data/:pathMatch(.*)*",
+          "to": "/guides/discovery"
+        },
+        {
+          "from": "/guide/rest-api-point-in-time-data/:pathMatch(.*)*",
+          "to": "/guides/odds"
+        },
+        {
+          "from": "/guide/graphql-api-realtime-updates/:pathMatch(.*)*",
+          "to": "/guides/streaming/overview"
+        },
+        {
+          "from": "/guides/streaming",
+          "to": "/guides/streaming/overview"
+        },
+        {
+          "from": "/guide/release-notes/:pathMatch(.*)*",
+          "to": "/changelog"
+        }
+      ]
+    },
+    "logo": "assets/unabated-logo.svg",
+    "theme": "none",
+    "colorScheme": {
+      "default": "dark",
+      "showToggle": false
+    },
+    "layout": {
+      "header": true,
+      "pageActions": true,
+      "pageTitle": false,
+      "sidebar": {
+        "enabled": true
+      }
+    },
+    "llms": {
+      "stripComments": true
     }
   },
   "versions": {
     "default": {
-      "title": "Version 0",
+      "title": "v1",
       "header": [
         {
           "type": "link",
-          "title": "Guide",
-          "to": "/guide"
+          "title": "Start",
+          "to": "/start/quickstart"
         },
         {
           "type": "link",
-          "title": "Reference",
+          "title": "Guides",
+          "to": "/guides/odds"
+        },
+        {
+          "type": "link",
+          "title": "API reference",
           "to": "/reference"
         },
         {
-          "type": "version-selector"
+          "type": "link",
+          "title": "Changelog",
+          "to": "/changelog"
+        },
+        {
+          "type": "link",
+          "title": "Get your API key \u2197",
+          "to": "https://tools.unabated.com/api-keys",
+          "align": "end"
         }
       ],
       "routes": {
-        "/guide": {
-          "title": "Guide",
+        "/start": {
           "type": "group",
+          "title": "Start building",
+          "mode": "folder",
           "children": {
-            "/getting-started": {
+            "/quickstart": {
               "type": "page",
-              "title": "Getting Started",
-              "description": "",
-              "icon": "line/interface-share-rocket",
-              "filepath": "guide/getting-started.md"
+              "title": "Quickstart",
+              "filepath": "start/quickstart.md",
+              "layout": {
+                "toc": false,
+                "pageTitle": false
+              },
+              "icon": "phosphor/regular/rocket"
             },
-            "/authorization": {
+            "/access-tiers": {
               "type": "page",
-              "title": "Authorization",
-              "description": "",
-              "icon": "line/interface-login-key",
-              "filepath": "guide/authorization.md"
+              "title": "Access tiers",
+              "filepath": "start/access-tiers.md",
+              "icon": "phosphor/regular/stack"
             },
-            "/code-examples": {
-              "type": "group",
-              "title": "Code Examples",
-              "mode": "folder",
-              "children": {
-                "/examples-repository": {
-                  "type": "link",
-                  "title": "Examples Repository",
-                  "url": "https://github.com/UnabatedOrg/unabated-api-docs"
-                },
-                "/.env-settings": {
-                  "type": "page",
-                  "title": ".env settings",
-                  "description": "",
-                  "icon": "line/interface-setting-cog",
-                  "filepath": "guide/code-examples/.env-settings.md"
-                }
-              }
+            "/authentication": {
+              "type": "page",
+              "title": "Authentication",
+              "filepath": "start/authentication.md",
+              "icon": "phosphor/regular/key"
             },
-            "/reference-data": {
-              "type": "group",
-              "title": "Reference Data",
-              "mode": "folder",
-              "children": {
-                "/side-index": {
-                  "type": "page",
-                  "title": "Side Index",
-                  "description": "",
-                  "icon": "",
-                  "filepath": "guide/reference-data/side-index.md"
-                },
-                "/market-types": {
-                  "type": "page",
-                  "title": "Market Types",
-                  "description": "",
-                  "icon": "",
-                  "filepath": "guide/reference-data/market-types.md"
-                },
-                "/market-line-status": {
-                  "type": "page",
-                  "title": "Market Line Status",
-                  "description": "",
-                  "icon": "",
-                  "filepath": "guide/reference-data/market-line-status.md"
-                },
-                "/event-status": {
-                  "type": "page",
-                  "title": "Event Status",
-                  "description": "",
-                  "icon": "",
-                  "filepath": "guide/reference-data/event-status.md"
-                },
-                "/leagues": {
-                  "type": "page",
-                  "title": "Leagues",
-                  "description": "",
-                  "icon": "",
-                  "filepath": "guide/reference-data/leagues.md"
-                },
-                "/period-types": {
-                  "type": "page",
-                  "title": "Period Types",
-                  "description": "",
-                  "icon": "",
-                  "filepath": "guide/reference-data/period-types.md"
-                }
-              }
+            "/agents": {
+              "type": "page",
+              "title": "Build with an agent",
+              "filepath": "start/agents.md",
+              "icon": "phosphor/regular/robot"
+            }
+          }
+        },
+        "/guides": {
+          "type": "group",
+          "title": "Guides",
+          "mode": "folder",
+          "children": {
+            "/odds": {
+              "type": "page",
+              "title": "Get odds",
+              "filepath": "guides/odds.md",
+              "icon": "phosphor/regular/chart-line"
             },
-            "/rest-api-point-in-time-data": {
+            "/deep-links": {
+              "type": "page",
+              "title": "Publish deep links",
+              "filepath": "guides/deep-links.md",
+              "icon": "phosphor/regular/link"
+            },
+            "/bet-slips": {
+              "type": "page",
+              "title": "Generate a bet slip",
+              "filepath": "guides/bet-slips.md",
+              "icon": "phosphor/regular/ticket"
+            },
+            "/discovery": {
+              "type": "page",
+              "title": "Discover IDs",
+              "filepath": "guides/discovery.md",
+              "icon": "phosphor/regular/compass"
+            },
+            "/response-concepts": {
+              "type": "page",
+              "title": "Understand the response",
+              "filepath": "guides/response-concepts.md",
+              "icon": "phosphor/regular/tree-structure"
+            },
+            "/errors-and-limits": {
+              "type": "page",
+              "title": "Errors and limits",
+              "filepath": "guides/errors-and-limits.md",
+              "icon": "phosphor/regular/warning"
+            },
+            "/streaming": {
               "type": "group",
-              "title": "REST API - Point in Time Data",
+              "title": "Stream live updates",
               "mode": "folder",
               "children": {
                 "/overview": {
                   "type": "page",
-                  "title": "Overview",
-                  "description": "",
-                  "icon": "line/interface-copy-clipboard",
-                  "filepath": "guide/rest-api-point-in-time-data/overview.md"
+                  "title": "Streaming overview",
+                  "filepath": "guides/streaming/overview.md",
+                  "icon": "phosphor/regular/broadcast"
                 },
-                "/queries": {
-                  "type": "group",
-                  "title": "Queries",
-                  "mode": "folder",
-                  "children": {
-                    "/bet-types": {
-                      "type": "page",
-                      "title": "Bet Types",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/rest-api-point-in-time-data/queries/bet-types.md"
-                    },
-                    "/events": {
-                      "type": "page",
-                      "title": "Events",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/rest-api-point-in-time-data/queries/events.md"
-                    },
-                    "/event-lineups": {
-                      "type": "page",
-                      "title": "Event Lineups",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/rest-api-point-in-time-data/queries/event-lineups.md"
-                    },
-                    "/market-data": {
-                      "type": "group",
-                      "title": "Market Data",
-                      "mode": "folder",
-                      "children": {
-                        "/odds": {
-                          "type": "page",
-                          "title": "Odds",
-                          "description": "",
-                          "icon": "",
-                          "filepath": "guide/rest-api-point-in-time-data/queries/market-data/odds.md"
-                        },
-                        "/people": {
-                          "type": "page",
-                          "title": "People",
-                          "description": "",
-                          "icon": "",
-                          "filepath": "guide/rest-api-point-in-time-data/queries/market-data/people.md"
-                        },
-                        "/market-sources": {
-                          "type": "page",
-                          "title": "Market Sources",
-                          "description": "",
-                          "icon": "",
-                          "filepath": "guide/rest-api-point-in-time-data/queries/market-data/market-sources.md"
-                        },
-                        "/teams": {
-                          "type": "page",
-                          "title": "Teams",
-                          "description": "",
-                          "icon": "",
-                          "filepath": "guide/rest-api-point-in-time-data/queries/market-data/teams.md"
-                        }
-                      }
-                    },
-                    "/players": {
-                      "type": "page",
-                      "title": "Players",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/rest-api-point-in-time-data/queries/players.md"
-                    },
-                    "/player-news": {
-                      "type": "page",
-                      "title": "Player News",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/rest-api-point-in-time-data/queries/player-news.md"
-                    },
-                    "/player-percent-to-play": {
-                      "type": "page",
-                      "title": "Player Percent to Play",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/rest-api-point-in-time-data/queries/player-percent-to-play.md"
-                    },
-                    "/teams": {
-                      "type": "page",
-                      "title": "Teams",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/rest-api-point-in-time-data/queries/teams.md"
-                    },
-                    "/tournaments": {
-                      "type": "page",
-                      "title": "Tournaments",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/rest-api-point-in-time-data/queries/tournaments.md"
-                    }
-                  }
-                },
-                "/caching": {
+                "/lifecycle": {
                   "type": "page",
-                  "title": "Caching",
-                  "description": "",
-                  "icon": "line/programming-computer-database",
-                  "filepath": "guide/rest-api-point-in-time-data/caching.md"
+                  "title": "Connect a live stream",
+                  "filepath": "guides/streaming/lifecycle.md"
                 },
-                "/live-sandbox": {
-                  "type": "link",
-                  "title": "Live Sandbox",
-                  "url": "https://docs.unabated.com/reference"
-                }
-              }
-            },
-            "/b2b-api": {
-              "type": "page",
-              "title": "B2B API",
-              "description": "Generate bet slips and article widgets from text, images, and media content.",
-              "icon": "",
-              "filepath": "guide/b2b-api.md"
-            },
-            "/graphql-api-realtime-updates": {
-              "type": "group",
-              "title": "GraphQL API - Realtime Updates",
-              "mode": "folder",
-              "children": {
-                "/overview": {
+                "/events-and-filters": {
                   "type": "page",
-                  "title": "Overview",
-                  "description": "",
-                  "icon": "line/interface-copy-clipboard",
-                  "filepath": "guide/graphql-api-realtime-updates/overview.md"
+                  "title": "Events and filters",
+                  "filepath": "guides/streaming/events-and-filters.md"
                 },
-                "/subscriptions": {
-                  "type": "group",
-                  "title": "Subscriptions",
-                  "mode": "folder",
-                  "children": {
-                    "/event-lineup": {
-                      "type": "page",
-                      "title": "Event Lineup",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/graphql-api-realtime-updates/subscriptions/event-lineup.md"
-                    },
-                    "/event-updates": {
-                      "type": "page",
-                      "title": "Event Updates",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/graphql-api-realtime-updates/subscriptions/event-updates.md"
-                    },
-                    "/market-line-updates": {
-                      "type": "page",
-                      "title": "Market Line Updates",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/graphql-api-realtime-updates/subscriptions/market-line-updates.md"
-                    },
-                    "/market-source-updates": {
-                      "type": "page",
-                      "title": "Market Source Updates",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/graphql-api-realtime-updates/subscriptions/market-source-updates.md"
-                    },
-                    "/market-updates": {
-                      "type": "page",
-                      "title": "Market Updates",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/graphql-api-realtime-updates/subscriptions/market-updates.md"
-                    },
-                    "/player-news": {
-                      "type": "page",
-                      "title": "Player News",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/graphql-api-realtime-updates/subscriptions/player-news.md"
-                    },
-                    "/player-percent-to-play": {
-                      "type": "page",
-                      "title": "Player Percent to Play",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/graphql-api-realtime-updates/subscriptions/player-percent-to-play.md"
-                    }
-                  }
-                },
-                "/queries": {
-                  "type": "group",
-                  "title": "Queries",
-                  "mode": "folder",
-                  "children": {
-                    "/recent-market-line-updates": {
-                      "type": "page",
-                      "title": "Recent Market Line Updates",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/graphql-api-realtime-updates/queries/recent-market-line-updates.md"
-                    },
-                    "/recent-event-updates": {
-                      "type": "page",
-                      "title": "Recent Event Updates",
-                      "description": "",
-                      "icon": "",
-                      "filepath": "guide/graphql-api-realtime-updates/queries/recent-event-updates.md"
-                    }
-                  }
-                },
-                "/live-sandbox": {
-                  "type": "link",
-                  "title": "Live Sandbox",
-                  "url": "https://data.unabated.com/docs/realtime"
-                }
-              }
-            },
-            "/release-notes": {
-              "type": "group",
-              "title": "Release Notes",
-              "mode": "folder",
-              "children": {
-                "/12325": {
+                "/recovery": {
                   "type": "page",
-                  "title": "12/3/25",
-                  "description": "",
-                  "icon": "",
-                  "filepath": "guide/release-notes/12325.md"
+                  "title": "Recover and reconnect",
+                  "filepath": "guides/streaming/recovery.md"
                 },
-                "/101525": {
+                "/models": {
                   "type": "page",
-                  "title": "10/15/25",
-                  "description": "",
-                  "icon": "",
-                  "filepath": "guide/release-notes/101525.md"
-                },
-                "/92425": {
-                  "type": "page",
-                  "title": "9/24/25",
-                  "description": "Added Polymarket as a new market source (market_source_id=107)",
-                  "icon": "",
-                  "filepath": "guide/release-notes/92425.md"
-                },
-                "/92325": {
-                  "type": "page",
-                  "title": "9/23/25",
-                  "description": "",
-                  "icon": "",
-                  "filepath": "guide/release-notes/92325.md"
-                },
-                "/82625": {
-                  "type": "page",
-                  "title": "8/26/25",
-                  "description": "",
-                  "icon": "",
-                  "filepath": "guide/release-notes/82625.md"
-                },
-                "/81325": {
-                  "type": "page",
-                  "title": "8/13/25",
-                  "description": "",
-                  "icon": "",
-                  "filepath": "guide/release-notes/81325.md"
+                  "title": "NFL in-game model",
+                  "filepath": "guides/streaming/models.md"
                 }
               }
             }
@@ -412,24 +244,53 @@
         },
         "/reference": {
           "type": "openapi",
-          "title": "Reference",
-          "description": "",
+          "title": "API reference",
+          "description": "Endpoint contracts, availability, request examples, and response schemas.",
           "url": "https://data-sandbox.unabated.com/swagger/v1/swagger.json",
+          "singlePage": false,
           "config": {
             "servers": [
               {
                 "url": "https://data-sandbox.unabated.com",
-                "description": "Unabated"
+                "description": "Unabated sandbox"
               }
             ],
-            "proxyUrl": ""
-          },
-          "singlePage": true
+            "proxyUrl": "",
+            "theme": "none",
+            "darkMode": true,
+            "hideDownloadButton": true,
+            "defaultHttpClient": {
+              "targetKey": "shell",
+              "clientKey": "curl"
+            },
+            "hiddenClients": [
+              "ruby",
+              "php",
+              "go",
+              "java",
+              "csharp",
+              "objc",
+              "swift",
+              "kotlin",
+              "clojure",
+              "c",
+              "ocaml",
+              "powershell",
+              "r"
+            ]
+          }
+        },
+        "/changelog": {
+          "type": "page",
+          "title": "Changelog",
+          "filepath": "changelog.md",
+          "icon": "phosphor/regular/clock-counter-clockwise"
         }
       }
     }
   },
   "publishOnMerge": false,
   "publishPreviews": false,
-  "pullRequestComments": false
+  "pullRequestComments": false,
+  "assetsDir": "assets"
 }
