@@ -259,7 +259,6 @@
             "theme": "none",
             "darkMode": true,
             "documentDownloadType": "none",
-            "modelsSectionLabel": "Schemas",
             "defaultHttpClient": {
               "targetKey": "shell",
               "clientKey": "curl"

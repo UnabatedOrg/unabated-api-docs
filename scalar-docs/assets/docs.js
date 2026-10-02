@@ -67,6 +67,15 @@
     });
     // Keep account links correct after client-side navigation.
     document.querySelectorAll('a[href="https://tools.unabated.com/api-keys"]').forEach(el => { if (sandbox) el.href = account; });
+    // Multi-page Scalar Docs does not forward modelsSectionLabel. This is the
+    // response schema index, distinct from the entitled NFL model endpoint.
+    if (location.pathname.startsWith('/reference')) {
+      document.querySelectorAll('aside.t-doc__sidebar button[aria-expanded] > div').forEach(el => {
+        if (el.classList.contains('group/button-label') && el.textContent.trim() === 'Models') {
+          el.textContent = 'Schemas';
+        }
+      });
+    }
   }
   initialize();
   document.addEventListener('DOMContentLoaded', initialize, { once: true });
