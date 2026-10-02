@@ -119,7 +119,7 @@ Last-Event-ID: OPAQUE_LAST_PROCESSED_ID
 
 Native browser `EventSource` handles standard `Last-Event-ID` reconnection for you. A new `EventSource` instance does not automatically inherit the old instance's state; raw HTTP clients can explicitly supply the header. Apply bounded exponential backoff with jitter for temporary network/server failures, and keep only one active connection for a subscription.
 
-The server offers **best-effort reconnect recovery**, not durable historical replay. The current implementation retains up to 1,024 recent events per serving process and sends at most the newest 256 matching events to a reconnecting connection. Busy periods can make that time window very short. A different serving process, a restart, a long interruption, or more matching updates than the recovery budget can leave your cursor outside retained history.
+The general SSE stream offers **best-effort reconnect recovery**, not durable historical replay. The current implementation retains up to 1,024 recent events per serving process and sends at most the newest 256 matching events to a reconnecting connection. Busy periods can make that time window very short. A different serving process, a restart, a long interruption, or more matching updates than the recovery budget can leave your cursor outside retained history.
 
 <scalar-callout type="warning">
 
