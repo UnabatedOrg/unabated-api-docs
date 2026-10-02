@@ -75,7 +75,7 @@ data: {"data":{"marketLineUpdate":{"leagueId":5,"marketTypeId":1,"marketLines":[
 
 Each blank line ends a frame. `event` names the event family, `data` contains its JSON payload, and `id` is an opaque hint for best-effort reconnect recovery. Lines beginning with `:` are connection or keepalive comments; they are not application events. The empty array above illustrates framing, not a real market update.
 
-Unabated sends named events. In a browser, register `addEventListener("market_line_update", handler)` rather than relying only on `onmessage`. A raw HTTP reader must combine every `data:` line in a frame before decoding JSON. The [complete lifecycle examples](/guides/streaming/lifecycle) handle this for you.
+Unabated sends named events. In a browser, register `addEventListener("market_line_update", handler)` rather than relying only on `onmessage`. A raw HTTP reader must combine every `data:` line in a frame before decoding JSON. The [complete lifecycle examples](https://docs.unabated.com/guides/streaming/lifecycle) handle this for you.
 
 ## Build current state, not just an event log
 
@@ -83,14 +83,14 @@ Most stream messages contain changes rather than a complete view of all odds. Id
 
 SSE market-line messages do not contain a `deepLink` URL. For a price or status change with unchanged selection points, retain the link obtained from REST. The link encodes the selection's points: when points change, invalidate the old link and retrieve a matching link from REST before publishing it. Apply the same rule to each alternate selection. For a newly encountered selection, retrieve its relevant REST data first.
 
-Use the optional server snapshot only after handling its completion and readiness state. If snapshots are unavailable, use REST synchronization with a bounded buffer of incoming events. Reconnect recovery is best effort and does not provide durable historical replay, so a resumed connection alone does not prove your state is complete. [Snapshots and recovery](/guides/streaming/recovery) explains these boundaries.
+Use the optional server snapshot only after handling its completion and readiness state. If snapshots are unavailable, use REST synchronization with a bounded buffer of incoming events. Reconnect recovery is best effort and does not provide durable historical replay, so a resumed connection alone does not prove your state is complete. [Snapshots and recovery](https://docs.unabated.com/guides/streaming/recovery) explains these boundaries.
 
 ## Choose your next step
 
-- [Connect and receive your first events](/guides/streaming/lifecycle): runnable cURL, JavaScript, and Python examples, plus a browser `EventSource` example.
-- [Events and filters](/guides/streaming/events-and-filters): supported families, exact payload roots, filter behavior, and line-update rules.
-- [Snapshots and recovery](/guides/streaming/recovery): initialization, `Last-Event-ID`, gap notices, expiry, and state repair.
-- [NFL in-game models](/guides/streaming/models): Enterprise API fair prices and model state transitions.
+- [Connect and receive your first events](https://docs.unabated.com/guides/streaming/lifecycle): runnable cURL, JavaScript, and Python examples, plus a browser `EventSource` example.
+- [Events and filters](https://docs.unabated.com/guides/streaming/events-and-filters): supported families, exact payload roots, filter behavior, and line-update rules.
+- [Snapshots and recovery](https://docs.unabated.com/guides/streaming/recovery): initialization, `Last-Event-ID`, gap notices, expiry, and state repair.
+- [NFL in-game models](https://docs.unabated.com/guides/streaming/models): Enterprise API fair prices and model state transitions.
 
 ## Agent task
 

@@ -12,7 +12,7 @@ Generic Gambly links in Free odds responses do not contain your partner code. Ad
 
 ## Your first tracked link
 
-1. Request an [odds board](/guides/odds) and choose an available line with a `deepLink`.
+1. Request an [odds board](https://docs.unabated.com/guides/odds) and choose an available line with a `deepLink`.
 2. Copy your partner code or exact tracking suffix from [Manage API Keys](https://tools.unabated.com/api-keys).
 3. Append that suffix to the generic returned link before publishing it on your site, social platform, or other distribution channel.
 4. Open the published link from your platform, then check lifetime clicks and last-click time on the key management page.
@@ -91,7 +91,7 @@ Use the code exactly as shown in key management. It is a public tracking identif
 
 `GET /deeplink` accepts comma-separated market line IDs and an optional matching list of points. Use IDs and points from your current odds response.
 
-Set `UNABATED_API_BASE_URL` explicitly to the [API base URL](/start/authentication#api-base-url), `https://data.unabated.com`. The example stops if it is missing.
+Set `UNABATED_API_BASE_URL` explicitly to the [API base URL](https://docs.unabated.com/start/authentication#api-base-url), `https://data.unabated.com`. The example stops if it is missing.
 
 ```bash
 # These variables must come from real selections in your response.
@@ -108,7 +108,7 @@ Invalid IDs or mismatched lists can produce `400`; a missing selection can produ
 
 ## Generated bet-slip links
 
-The [bet-slip generation workflow](/guides/bet-slips) returns its own links. For Free content partner requests, generation carries your partner attribution into those links. Publish the returned bet-slip URLs as provided. The manual suffix step above applies to generic `/deeplink/odds/` URLs from odds or standard deep-link responses.
+The [bet-slip generation workflow](https://docs.unabated.com/guides/bet-slips) returns its own links. For Free content partner requests, generation carries your partner attribution into those links. Publish the returned bet-slip URLs as provided. The manual suffix step above applies to generic `/deeplink/odds/` URLs from odds or standard deep-link responses.
 
 ## Verify from your site
 

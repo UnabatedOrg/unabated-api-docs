@@ -155,4 +155,4 @@ For a new connection rejected with `401`, create a fresh subscription with your 
 
 Close unused streams explicitly: `EventSource.close()` in browsers, `AbortController.abort()` for `fetch`, or close the HTTP response/context in Python. Closing the connection releases that consumer; no public delete-subscription operation is required for cleanup.
 
-Next: [Complete lifecycle samples](/guides/streaming/lifecycle) or [NFL model-specific state rules](/guides/streaming/models).
+Next: [Complete lifecycle samples](https://docs.unabated.com/guides/streaming/lifecycle) or [NFL model-specific state rules](https://docs.unabated.com/guides/streaming/models).

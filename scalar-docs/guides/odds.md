@@ -4,7 +4,7 @@
 
 `GET /market/{league}/{marketType}/odds`
 
-Choose a league route name from [`GET /league`](/guides/discovery) and one market type: `straight`, `futures`, or `props`. The response contains a board grouped by league, period, event/market group, side, and sportsbook.
+Choose a league route name from [`GET /league`](https://docs.unabated.com/guides/discovery) and one market type: `straight`, `futures`, or `props`. The response contains a board grouped by league, period, event/market group, side, and sportsbook.
 
 <scalar-callout type="info">
 Free API permits one odds request every five seconds per API key, shared across all odds endpoints. Use one scheduler for that key, even when requesting different leagues or market types. Honor the response's `Retry-After` header on a `429`.
@@ -12,7 +12,7 @@ Free API permits one odds request every five seconds per API key, shared across 
 
 ## Make a request
 
-Set `UNABATED_API_BASE_URL` explicitly to the [API base URL](/start/authentication#api-base-url), `https://data.unabated.com`. The examples stop if it is missing.
+Set `UNABATED_API_BASE_URL` explicitly to the [API base URL](https://docs.unabated.com/start/authentication#api-base-url), `https://data.unabated.com`. The examples stop if it is missing.
 
 ```bash
 curl --fail-with-body --connect-timeout 5 --max-time 20 \
@@ -141,7 +141,7 @@ for league in ((body.get('data') or {}).get('odds') or {}).values():
 
 `alternateLines` contains alternate points/prices for the selection. Read each alternate's own `points`, `price`, status, and `deepLink`. Do not attach the main line's URL to an alternate with different points.
 
-Use the returned `deepLink` when available. For Free content partners, add the partner code before publishing; the [deep-link guide](/guides/deep-links) shows the complete process. A link resolves the destination at click time; the sportsbook can have changed its price or availability since your response.
+Use the returned `deepLink` when available. For Free content partners, add the partner code before publishing; the [deep-link guide](https://docs.unabated.com/guides/deep-links) shows the complete process. A link resolves the destination at click time; the sportsbook can have changed its price or availability since your response.
 
 ## Freshness and empty boards
 
@@ -149,4 +149,4 @@ Use the returned `deepLink` when available. For Free content partners, add the p
 
 Free odds come from a delayed snapshot. Do not fall back to a different key or a live dataset to hide a delayed-data error. A temporary delayed snapshot failure can return `503` with `Retry-After: 5`.
 
-An empty board or a missing book can be valid: there may be no current offers, the market may not exist for that league, or the key may lack that scope. Inspect discovered sources and the response messages. See [errors and limits](/guides/errors-and-limits) for recovery and [response concepts](/guides/response-concepts) for status values.
+An empty board or a missing book can be valid: there may be no current offers, the market may not exist for that league, or the key may lack that scope. Inspect discovered sources and the response messages. See [errors and limits](https://docs.unabated.com/guides/errors-and-limits) for recovery and [response concepts](https://docs.unabated.com/guides/response-concepts) for status values.

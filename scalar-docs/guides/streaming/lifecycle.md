@@ -2,7 +2,7 @@
 
 **Available for: Concierge API · Enterprise API**
 
-Create a subscription, open its signed URL, and handle named SSE frames. These examples run one bounded, 60-second session, then close it. They establish the complete authentication and framing lifecycle; add the [snapshot and recovery workflow](/guides/streaming/recovery) before using streamed updates as a complete production view.
+Create a subscription, open its signed URL, and handle named SSE frames. These examples run one bounded, 60-second session, then close it. They establish the complete authentication and framing lifecycle; add the [snapshot and recovery workflow](https://docs.unabated.com/guides/streaming/recovery) before using streamed updates as a complete production view.
 
 ## Before you run
 
@@ -239,7 +239,7 @@ main().catch(error => {
 });
 ```
 
-The parser captures `retry` hints and IDs, but this one-session sample deliberately does not retry or maintain full odds state. Follow [recovery](/guides/streaming/recovery) to add bounded retries, `Last-Event-ID`, and authoritative-state repair.
+The parser captures `retry` hints and IDs, but this one-session sample deliberately does not retry or maintain full odds state. Follow [recovery](https://docs.unabated.com/guides/streaming/recovery) to add bounded retries, `Last-Event-ID`, and authoritative-state repair.
 
 </scalar-tab>
 <scalar-tab title="Python">
@@ -419,4 +419,4 @@ Native `EventSource` handles the SSE framing and its usual reconnect behavior. I
 
 Subscription creation uses the standard `success`/`messages` envelope. Stream admission failures can have an empty response body, so check the HTTP status and content type before decoding frames. A connection that already sent `200` can later close on expiry or lost access without emitting a new HTTP status.
 
-Next: [Choose precise filters](/guides/streaming/events-and-filters) and [initialize, reconnect, and repair state](/guides/streaming/recovery).
+Next: [Choose precise filters](https://docs.unabated.com/guides/streaming/events-and-filters) and [initialize, reconnect, and repair state](https://docs.unabated.com/guides/streaming/recovery).
