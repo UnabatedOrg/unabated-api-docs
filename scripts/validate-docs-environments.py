@@ -4,6 +4,7 @@
 import argparse
 import copy
 import json
+import re
 from pathlib import Path
 import sys
 from urllib.parse import urlparse
@@ -142,6 +143,39 @@ def difference_paths(left, right, location="versions"):
         yield location
 
 
+def validate_content(config, config_path, errors):
+    """Check only published sources, including HTML links and authored code blocks."""
+    routes = set()
+    pages = []
+
+    def visit(children, prefix=""):
+        for segment, route in children.items():
+            path = prefix + segment
+            routes.add(path)
+            if route.get("type") == "page":
+                pages.append(config_path.parent / route["filepath"])
+            visit(route.get("children", {}), path)
+
+    for version in config.get("versions", {}).values():
+        visit(version.get("routes", {}))
+    routes.update(redirect["from"] for redirect in config.get("siteConfig", {}).get("routing", {}).get("redirects", []) if ":" not in redirect["from"])
+    routes.update({"/llms.txt", "/llms-full.txt"})
+    deprecated = re.compile(r"web[ -]?sockets?|realtime\.(?:unabated|nimbeta|unibeta|unabeta)\.com", re.I)
+    for page in pages:
+        if not page.is_file():
+            continue  # Missing files are reported by the environment boundary checks.
+        text = page.read_text(encoding="utf-8")
+        if deprecated.search(text):
+            errors.append(f"{page.name}: deprecated transport or host remains in published content")
+        if len(re.findall(r"^```", text, re.M)) % 2:
+            errors.append(f"{page.name}: an authored code fence is not closed")
+        links = re.findall(r"\]\((/[^\s)]+)\)", text) + re.findall(r'href="(/[^" ]+)"', text)
+        for link in links:
+            path = urlparse(link).path
+            if path not in routes:
+                errors.append(f"{page.name}: local documentation link has no route: {link}")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -163,6 +197,7 @@ def main():
             errors.append("Shared navigation differs between configs; update both: " + ", ".join(differences[:10]))
             if len(differences) > 10:
                 errors.append(f"Shared navigation has {len(differences) - 10} additional differences")
+        validate_content(configs["dev"], args.repo_root / ENVIRONMENTS["dev"]["config"], errors)
 
     if errors:
         print("Documentation environment validation failed:", file=sys.stderr)
@@ -174,6 +209,7 @@ def main():
     for name, settings in ENVIRONMENTS.items():
         print(f"- {name}: {settings['domain']}; {reference_counts[name]} local references resolved")
     print("- Shared versions/navigation match; production publication remains manual.")
+    print("- Published page links, code fences, and deprecated transport checks passed.")
     return 0
 
 

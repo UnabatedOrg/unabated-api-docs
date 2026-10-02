@@ -21,6 +21,10 @@ Tracked branches are selected in each project's Scalar **Settings → Git Sync**
 
 4. In the dev Scalar project, verify the tracked branch is `dev` and the configuration path is `scalar-docs/scalar.dev.config.json`, then **Publish**. Review the result at [docs-sandbox.unabated.com](https://docs-sandbox.unabated.com).
 
+For a local visual check, run `npx @scalar/cli project preview scalar-docs/scalar.dev.config.json --no-open`. Check the tier and language switches, copy controls, navigation, and a phone-sized viewport. Scalar's published site generates `/llms.txt`, `/llms-full.txt`, and Markdown pages; verify those exports after publication rather than treating the local preview as their delivery test.
+
+When endpoint metadata changes, deploy the matching backend change to dev before publishing the reference. Check an odds operation and the signed SSE stream operation for tier badges, authentication, response media type, and code examples. The guide stylesheet, scripts, and authentic logo are shared assets in `scalar-docs/assets`.
+
 Both projects initially have `publishOnMerge`, `publishPreviews`, and `pullRequestComments` explicitly set to `false`. Dev automatic publishing may be enabled later by changing its `publishOnMerge` setting. Production stays manual, and the validator enforces that boundary. Avoid changing publishing settings through both the editor and Git at the same time; these settings are stored in the configuration files.
 
 ## Promote approved changes to production
