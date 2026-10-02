@@ -106,6 +106,24 @@ Use `_` for a selection without points when supplying a list of point values. If
 
 Invalid IDs or mismatched lists can produce `400`; a missing selection can produce `404`; a Concierge API key or a book outside Free API coverage can produce `403`. Same-game parlay pricing and generation are available for Enterprise API.
 
+### Read the link result
+
+In a successful HTTP response, `data.status` is a JSON integer and `data.statusString` is its text label. Check both the result status and the returned URL fields before publishing a link; an HTTP `200` does not by itself indicate full selection support.
+
+| `data.status` | `data.statusString` |
+| --- | --- |
+| `-3` | `no_support_web` |
+| `-2` | `no_support_mobile` |
+| `-1` | `no_support` |
+| `0` | `full_support` |
+| `1` | `event_support` |
+| `2` | `unknown_issue` |
+| `3` | `partial_support` |
+| `4` | `invalid_input` |
+| `5` | `supports_one_bet_only` |
+
+For example, full support is returned as `"status": 0` with `"statusString": "full_support"`. These values describe the link result and are separate from event, market-line, and source statuses. Bet-slip generation and polling have their own [status lifecycle](/guides/bet-slips).
+
 ## Generated bet-slip links
 
 The [bet-slip generation workflow](/guides/bet-slips), available to Free API and Enterprise API, returns its own links. For Free content partner requests, generation carries your partner attribution into those links. Publish the returned bet-slip URLs as provided. The manual suffix step above applies to generic `/deeplink/odds/` URLs from odds or standard deep-link responses.

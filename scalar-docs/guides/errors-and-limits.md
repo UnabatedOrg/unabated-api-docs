@@ -20,6 +20,16 @@ Check the HTTP status first. For endpoints using the public envelope, also check
 
 Error bodies are not all the same shape. Middleware can return a `message` object; some operations return plain text or framework validation errors. Inspect status and content type before assuming every error has a `data` envelope.
 
+When a Free API key calls an endpoint excluded from Free API, such as `POST /subscriptions` or `GET /sse/{subscriptionId}`, the scope check returns HTTP `403` with this JSON body:
+
+```json
+{
+  "message": "This endpoint is not included in Free API access."
+}
+```
+
+Read the singular `message` field directly; this response has no `data`, `success`, or `messages` fields. Other access checks can return a different JSON object, plain text, or an empty body. Keep HTTP status handling independent of body parsing so an empty denial remains a `403` access failure.
+
 Concierge API does not include `GET /deeplink`, `POST /api/v1/bet/generate`, or `GET /api/v1/bet/status/{guid}`. A `403` from these operations is an access restriction, not a reason to retry; Concierge REST odds and SSE remain available within their documented scope.
 
 ## Free odds: one scheduler per key
