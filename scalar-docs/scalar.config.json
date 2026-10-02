@@ -1,0 +1,84 @@
+{
+  "$schema": "https://cdn.scalar.com/schema/scalar-config-next.json",
+  "scalar": "2.0.0",
+  "info": {
+    "title": "Unabated API - Dev",
+    "description": "",
+    "version": "Version 0"
+  },
+  "siteConfig": {
+    "customDomain": "docs-sandbox.unabated.com",
+    "subdomain": "unabated-sandbox",
+    "footer": {
+      "filepath": "footer.html"
+    },
+    "head": {
+      "title": "Unabated API - Sandbox",
+      "links": [],
+      "meta": [],
+      "styles": [
+        {
+          "path": "footer-theme.css"
+        }
+      ],
+      "scripts": []
+    },
+    "routing": {
+      "redirects": []
+    }
+  },
+  "versions": {
+    "default": {
+      "title": "Version 0",
+      "header": [
+        {
+          "type": "link",
+          "title": "Guide",
+          "to": "/guide"
+        },
+        {
+          "type": "link",
+          "title": "Reference",
+          "to": "/reference"
+        },
+        {
+          "type": "version-selector"
+        }
+      ],
+      "routes": {
+        "/guide": {
+          "title": "Guide",
+          "type": "group",
+          "children": {
+            "/unabated-data-api": {
+              "type": "page",
+              "title": "Unabated Data API",
+              "description": "SANDBOX",
+              "icon": "",
+              "filepath": "guide/unabated-data-api.md"
+            }
+          }
+        },
+        "/reference": {
+          "type": "openapi",
+          "title": "Reference",
+          "description": "",
+          "url": "https://data-sandbox.unabated.com/swagger/v1/swagger.json",
+          "config": {
+            "servers": [
+              {
+                "url": "https://data-sandbox.unabated.com",
+                "description": "Unabated"
+              }
+            ],
+            "proxyUrl": ""
+          },
+          "singlePage": true
+        }
+      }
+    }
+  },
+  "publishOnMerge": false,
+  "publishPreviews": false,
+  "pullRequestComments": false
+}
