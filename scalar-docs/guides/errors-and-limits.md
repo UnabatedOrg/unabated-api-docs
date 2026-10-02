@@ -9,7 +9,7 @@ Check the HTTP status first. For endpoints using the public envelope, also check
 | Signal | Meaning | Recovery |
 | --- | --- | --- |
 | `400` | Invalid request, identifier, parameter, or body | Correct the input; check the operation schema and discovery data |
-| `401` | Authentication missing or invalid | Check the header, correct environment, and active key |
+| `401` | Authentication missing or invalid | Check the header, API base URL, and active key |
 | `403` | Endpoint or data is unavailable for your API tier or Enterprise API agreement | Check the endpoint's available tiers and data coverage; repeating the call does not change your tier |
 | `404` | The requested resource or selection was not found, where emitted by that operation | Refresh the relevant data and use a current identifier |
 | `429` | Free odds request arrived before the key's next allowed interval | Wait for `Retry-After`; coordinate all odds calls using that key |
@@ -30,13 +30,13 @@ This shared interval applies to odds endpoints. Discovery and bet-slip status re
 
 ### Retry a read safely
 
-This Node.js 20+ example serializes calls made through **one instance** of the client. A distributed integration must coordinate across its processes too. It honors `Retry-After`, bounds attempts, and uses a timeout. Set `UNABATED_API_KEY` securely and set `UNABATED_API_BASE_URL` explicitly to the [production or sandbox origin](/start/authentication#production-and-sandbox) matching your key. The example stops if the base URL is missing.
+This Node.js 20+ example serializes calls made through **one instance** of the client. A distributed integration must coordinate across its processes too. It honors `Retry-After`, bounds attempts, and uses a timeout. Set `UNABATED_API_KEY` securely and set `UNABATED_API_BASE_URL` explicitly to the [API base URL](/start/authentication#api-base-url), `https://data.unabated.com`. The example stops if the base URL is missing.
 
 ```javascript
 const key = process.env.UNABATED_API_KEY;
 if (!key) throw new Error('Set UNABATED_API_KEY');
 const base = process.env.UNABATED_API_BASE_URL;
-if (!base) throw new Error('Set UNABATED_API_BASE_URL to the intended API origin');
+if (!base) throw new Error('Set UNABATED_API_BASE_URL to https://data.unabated.com');
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 let queue = Promise.resolve();
 let nextRequestAt = 0;

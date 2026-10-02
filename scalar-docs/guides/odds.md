@@ -12,13 +12,13 @@ Free API permits one odds request every five seconds per API key, shared across 
 
 ## Make a request
 
-Set `UNABATED_API_BASE_URL` explicitly to the [production or sandbox origin](/start/authentication#production-and-sandbox) matching your key. The examples stop if it is missing.
+Set `UNABATED_API_BASE_URL` explicitly to the [API base URL](/start/authentication#api-base-url), `https://data.unabated.com`. The examples stop if it is missing.
 
 ```bash
 curl --fail-with-body --connect-timeout 5 --max-time 20 \
   --header "X-Api-Key: ${UNABATED_API_KEY}" \
   --header "Accept: application/json" \
-  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to the intended API origin}/market/nfl/straight/odds"
+  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to https://data.unabated.com}/market/nfl/straight/odds"
 ```
 
 For a narrower response, add one or more `betTypeId` query parameters using IDs from `GET /bettype`:
@@ -58,7 +58,7 @@ Node.js 20 or later; save as `odds.mjs` and run `node odds.mjs` on your server.
 const key = process.env.UNABATED_API_KEY;
 if (!key) throw new Error('Set UNABATED_API_KEY');
 const base = process.env.UNABATED_API_BASE_URL;
-if (!base) throw new Error('Set UNABATED_API_BASE_URL to the intended API origin');
+if (!base) throw new Error('Set UNABATED_API_BASE_URL to https://data.unabated.com');
 const response = await fetch(`${base}/market/nfl/straight/odds`, {
   headers: { 'X-Api-Key': key, Accept: 'application/json' },
   signal: AbortSignal.timeout(20_000),

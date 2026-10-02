@@ -2,7 +2,7 @@
   "$schema": "https://cdn.scalar.com/schema/scalar-config-next.json",
   "scalar": "2.0.0",
   "info": {
-    "title": "Unabated API - Dev",
+    "title": "Unabated API",
     "description": "Market data for developers, content partners, and the agents helping them.",
     "version": "v1"
   },
@@ -13,7 +13,7 @@
       "filepath": "footer.html"
     },
     "head": {
-      "title": "Unabated API - Sandbox",
+      "title": "Unabated API",
       "links": [],
       "meta": [
         {
@@ -126,7 +126,7 @@
         {
           "type": "link",
           "title": "Get your API key \u2197",
-          "to": "https://becoming-tools.unabated.com/api-keys",
+          "to": "https://tools.unabated.com/api-keys",
           "align": "end"
         }
       ],
@@ -251,8 +251,8 @@
           "config": {
             "servers": [
               {
-                "url": "https://data-sandbox.unabated.com",
-                "description": "Unabated sandbox"
+                "url": "https://data.unabated.com",
+                "description": "Unabated API"
               }
             ],
             "proxyUrl": "",

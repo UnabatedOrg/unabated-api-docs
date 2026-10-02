@@ -4,10 +4,10 @@
 
 Send your API key in the `X-Api-Key` request header. Use HTTPS and keep the key in your server's environment or secrets store.
 
-Set `UNABATED_API_BASE_URL` to the intended production or sandbox origin from the table below before running any example. The examples require an explicit environment and do not select one for you.
+Set `UNABATED_API_BASE_URL` to `https://data.unabated.com` before running any example. Keep your API key private.
 
 ```bash
-: "${UNABATED_API_BASE_URL:?Choose production or sandbox from the table below}"
+export UNABATED_API_BASE_URL="https://data.unabated.com"
 read -r -s -p "API key: " UNABATED_API_KEY; printf '\n'
 export UNABATED_API_KEY
 
@@ -19,14 +19,11 @@ curl --fail-with-body --connect-timeout 5 --max-time 20 \
 
 The `read` example is for Bash and asks for the key without placing it in shell history. For deployed software, inject the environment variable from your secrets manager.
 
-## Production and sandbox
+## API base URL
 
-| Environment | REST and subscription base URL | Key management |
-| --- | --- | --- |
-| Production | `https://data.unabated.com` | [Manage API Keys](https://tools.unabated.com/api-keys) |
-| Sandbox | `https://data-sandbox.unabated.com` | [Dev Manage API Keys](https://becoming-tools.unabated.com/api-keys) |
+Use `https://data.unabated.com` as the base URL for REST requests and subscription creation. Manage your keys at [Manage API Keys](https://tools.unabated.com/api-keys).
 
-Use the key and partner setup intended for the environment you are testing. Export `UNABATED_API_BASE_URL` with the chosen origin, for example `export UNABATED_API_BASE_URL="https://data-sandbox.unabated.com"` for sandbox testing. Never switch environments silently after an error.
+The examples read `UNABATED_API_BASE_URL` from your application's configuration. Set it to the API base URL above; the signed streaming URL returned by the API uses the same origin.
 
 ## Get and manage keys
 

@@ -22,7 +22,7 @@ The REST odds path uses market type names; an SSE filter that requests a market 
 
 ## Read a current league list
 
-Set `UNABATED_API_KEY` securely and set `UNABATED_API_BASE_URL` explicitly to the [production or sandbox origin](/start/authentication#production-and-sandbox) matching your key. The examples stop if the base URL is missing and print league IDs and route names when the request succeeds.
+Set `UNABATED_API_KEY` securely and set `UNABATED_API_BASE_URL` explicitly to the [API base URL](/start/authentication#api-base-url), `https://data.unabated.com`. The examples stop if the base URL is missing and print league IDs and route names when the request succeeds.
 
 <scalar-tabs>
 <scalar-tab title="cURL">
@@ -31,7 +31,7 @@ Set `UNABATED_API_KEY` securely and set `UNABATED_API_BASE_URL` explicitly to th
 curl --fail-with-body --connect-timeout 5 --max-time 20 \
   --header "X-Api-Key: ${UNABATED_API_KEY}" \
   --header "Accept: application/json" \
-  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to the intended API origin}/league"
+  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to https://data.unabated.com}/league"
 ```
 
 </scalar-tab>
@@ -43,7 +43,7 @@ Node.js 20 or later; run on your server.
 const key = process.env.UNABATED_API_KEY;
 if (!key) throw new Error('Set UNABATED_API_KEY');
 const base = process.env.UNABATED_API_BASE_URL;
-if (!base) throw new Error('Set UNABATED_API_BASE_URL to the intended API origin');
+if (!base) throw new Error('Set UNABATED_API_BASE_URL to https://data.unabated.com');
 const response = await fetch(`${base}/league`, {
   headers: { 'X-Api-Key': key, Accept: 'application/json' },
   signal: AbortSignal.timeout(20_000),
@@ -88,7 +88,7 @@ After choosing a returned league name, ask which books are present for the marke
 # Replace nfl with a league name from /league.
 curl --fail-with-body --connect-timeout 5 --max-time 20 \
   --header "X-Api-Key: ${UNABATED_API_KEY}" \
-  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to the intended API origin}/market/nfl/straight/sources"
+  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to https://data.unabated.com}/market/nfl/straight/sources"
 ```
 
 The source response contains `id`, `name`, logo URLs, and status fields. A source being present does not guarantee a usable line for every event. Inspect the returned odds and line status.

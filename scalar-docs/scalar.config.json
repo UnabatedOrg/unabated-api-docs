@@ -252,7 +252,7 @@
             "servers": [
               {
                 "url": "https://data.unabated.com",
-                "description": "Unabated production"
+                "description": "Unabated API"
               }
             ],
             "proxyUrl": "",

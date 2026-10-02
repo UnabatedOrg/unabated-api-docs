@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the environment boundaries of the two Scalar documentation sites."""
+"""Validate separate docs sites with production-only customer API guidance."""
 
 import argparse
 import copy
@@ -16,6 +16,7 @@ ENVIRONMENTS = {
         "domain": "docs.unabated.com",
         "subdomain": "unabated",
         "api": "https://data.unabated.com",
+        "request_api": "https://data.unabated.com",
         "account": "https://tools.unabated.com/api-keys",
     },
     "dev": {
@@ -23,7 +24,8 @@ ENVIRONMENTS = {
         "domain": "docs-sandbox.unabated.com",
         "subdomain": "unabated-sandbox",
         "api": "https://data-sandbox.unabated.com",
-        "account": "https://becoming-tools.unabated.com/api-keys",
+        "request_api": "https://data.unabated.com",
+        "account": "https://tools.unabated.com/api-keys",
     },
 }
 
@@ -95,8 +97,8 @@ def validate_environment(name, settings, repo_root, errors):
             errors.append(f"{location}.routes./reference.config.documentDownloadType: expected 'none'; readable guides do not require a JSON download")
         servers = reference_config.get("servers")
         urls = [server.get("url") for server in servers if isinstance(server, dict)] if isinstance(servers, list) else None
-        if urls != [settings["api"]] or not isinstance(servers, list) or len(servers) != 1:
-            errors.append(f"{location}.routes./reference.config.servers: expected exactly one server at {settings['api']!r}")
+        if urls != [settings["request_api"]] or not isinstance(servers, list) or len(servers) != 1:
+            errors.append(f"{location}.routes./reference.config.servers: expected exactly one customer API server at {settings['request_api']!r}")
 
     checked_references = 0
     for location, target in local_references(config):
@@ -120,17 +122,11 @@ def shared_versions(config):
     for version in versions.values():
         if not isinstance(version, dict):
             continue
-        for item in version.get("header", []):
-            if item.get("title") == "Get your API key ↗":
-                item.pop("to", None)
         routes = version.get("routes", {})
         reference = routes.get("/reference", {}) if isinstance(routes, dict) else {}
         if not isinstance(reference, dict):
             continue
         reference.pop("url", None)
-        reference_config = reference.get("config", {})
-        if isinstance(reference_config, dict):
-            reference_config.pop("servers", None)
     return versions
 
 
@@ -173,6 +169,7 @@ def validate_content(config, config_path, errors):
     deprecated = re.compile(r"web[ -]?sockets?|realtime\.(?:unabated|nimbeta|unibeta|unabeta)\.com", re.I)
     internal_access = re.compile(r"\b(?:entitle\w*|privilege\w*)\b|\b(?:api|role):[a-z_]", re.I)
     private_projections = re.compile(r"projectionSourceIds|projection_set_update|/projections?\b", re.I)
+    private_environment = re.compile(r"\bsandbox\b|becoming-tools\.unabated\.com", re.I)
     for page in pages:
         if not page.is_file():
             continue  # Missing files are reported by the environment boundary checks.
@@ -183,6 +180,8 @@ def validate_content(config, config_path, errors):
             errors.append(f"{page.name}: public availability must use tier labels, without internal access details")
         if private_projections.search(text):
             errors.append(f"{page.name}: private projection feature remains in published content")
+        if private_environment.search(text):
+            errors.append(f"{page.name}: customer documentation must not mention private API environments")
         if len(re.findall(r"^```", text, re.M)) % 2:
             errors.append(f"{page.name}: an authored code fence is not closed")
         links = re.findall(r"\]\((/[^\s)]+)\)", text) + re.findall(r'href="(/[^" ]+)"', text)
@@ -190,6 +189,12 @@ def validate_content(config, config_path, errors):
             path = urlparse(link).path
             if path not in routes:
                 errors.append(f"{page.name}: local documentation link has no route: {link}")
+
+    # Authored browser code is published too; it must never change customer
+    # examples or account links based on the documentation review site's host.
+    script = config_path.parent / "assets/docs.js"
+    if script.is_file() and private_environment.search(script.read_text(encoding="utf-8")):
+        errors.append("docs.js: public examples or links mention a private API environment")
 
 
 def main():
@@ -225,7 +230,7 @@ def main():
     for name, settings in ENVIRONMENTS.items():
         print(f"- {name}: {settings['domain']}; {reference_counts[name]} local references resolved")
     print("- Shared versions/navigation match; production publication remains manual.")
-    print("- Published page links, code fences, and deprecated transport checks passed.")
+    print("- Published page links, code fences, public tier labels, and production-only API guidance passed.")
     return 0
 
 

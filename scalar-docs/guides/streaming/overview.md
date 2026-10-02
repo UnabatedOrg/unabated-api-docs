@@ -17,9 +17,7 @@ Free API access does not include SSE. Use the Free Odds API REST workflow and it
 1. Send `POST /subscriptions` with your API key and the event types and filters you need.
 2. Read `data.streamUrl` from the response and open it with `GET` against the same API base URL.
 
-Production base URL: `https://data.unabated.com`
-
-Sandbox base URL: `https://data-sandbox.unabated.com`
+API base URL: `https://data.unabated.com`
 
 ```http
 POST /subscriptions
@@ -98,6 +96,7 @@ Use the optional server snapshot only after handling its completion and readines
 
 ```text
 Build a server-side Unabated live-odds integration for Concierge API or Enterprise API.
+Use https://data.unabated.com and obtain my authorization before making API requests.
 Read the streaming lifecycle, filter, and recovery pages first. Discover IDs,
 create a narrowly filtered subscription, and consume named SSE events using
 standard framing. Keep credentials in environment variables and never log

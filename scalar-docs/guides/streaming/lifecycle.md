@@ -6,18 +6,17 @@ Create a subscription, open its signed URL, and handle named SSE frames. These e
 
 ## Before you run
 
-Use a Concierge API or Enterprise API key. Free API keys return `403` for this workflow. Discover a league ID from `GET /league`, and choose one within your API tier's sports coverage. Choose production (`https://data.unabated.com`) or sandbox (`https://data-sandbox.unabated.com`), then set the following variables privately in your shell:
+Use a Concierge API or Enterprise API key. Free API keys return `403` for this workflow. Discover a league ID from `GET /league`, and choose one within your API tier's sports coverage. Set the following variables privately in your shell:
 
 ```bash
-read -r -p "Intended API base URL: " UNABATED_API_BASE_URL
-export UNABATED_API_BASE_URL
+export UNABATED_API_BASE_URL="https://data.unabated.com"
 read -r -s -p "API key: " UNABATED_API_KEY; printf '\n'
 export UNABATED_API_KEY
 read -r -p "Discovered league ID: " UNABATED_LEAGUE_ID
 export UNABATED_LEAGUE_ID
 ```
 
-The `read` commands above use Bash syntax. Run them in Bash, or set the same environment variables through your normal secret manager. For sandbox testing, use `https://data-sandbox.unabated.com` and a sandbox key. Do not mix production and sandbox credentials.
+The `read` commands above use Bash syntax. Run them in Bash, or set the same environment variables through your normal secret manager. The API base URL is `https://data.unabated.com`.
 
 The request subscribes to `market_line_update` and `event_update` for your selected league. It does not request models, news, or other additional features. Further narrow it with discovered market/source/bet-type IDs if needed.
 
@@ -33,10 +32,10 @@ Requires Bash, cURL, and Python 3. Save this as `stream.sh` and run `bash stream
 set -euo pipefail
 : "${UNABATED_API_KEY:?Set UNABATED_API_KEY privately}"
 : "${UNABATED_LEAGUE_ID:?Set a discovered UNABATED_LEAGUE_ID}"
-api_base="${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to the intended API origin}"
+api_base="${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to https://data.unabated.com}"
 case "$api_base" in
-  https://data.unabated.com|https://data-sandbox.unabated.com) ;;
-  *) echo "Choose the production or sandbox API base." >&2; exit 1 ;;
+  https://data.unabated.com) ;;
+  *) echo "Set UNABATED_API_BASE_URL to https://data.unabated.com." >&2; exit 1 ;;
 esac
 
 request_body=$(python3 - <<'PY'
@@ -111,15 +110,15 @@ Requires Node.js 20 or newer; no package installation is needed. Save as `stream
 ```javascript
 const base = process.env.UNABATED_API_BASE_URL;
 if (!base) {
-  throw new Error("Set UNABATED_API_BASE_URL to the intended API origin.");
+  throw new Error("Set UNABATED_API_BASE_URL to https://data.unabated.com.");
 }
 const apiKey = process.env.UNABATED_API_KEY;
 const leagueId = Number(process.env.UNABATED_LEAGUE_ID);
 if (!apiKey || !Number.isSafeInteger(leagueId) || leagueId <= 0) {
   throw new Error("Set UNABATED_API_KEY and a discovered UNABATED_LEAGUE_ID.");
 }
-if (!["https://data.unabated.com", "https://data-sandbox.unabated.com"].includes(base)) {
-  throw new Error("Choose the production or sandbox API base.");
+if (base !== "https://data.unabated.com") {
+  throw new Error("Set UNABATED_API_BASE_URL to https://data.unabated.com.");
 }
 
 async function* sseFrames(body) {
@@ -261,8 +260,8 @@ API_KEY = os.environ["UNABATED_API_KEY"]
 LEAGUE_ID = int(os.environ["UNABATED_LEAGUE_ID"])
 if LEAGUE_ID <= 0:
     raise SystemExit("Choose a positive discovered league ID.")
-if BASE not in {"https://data.unabated.com", "https://data-sandbox.unabated.com"}:
-    raise SystemExit("Choose the production or sandbox API base.")
+if BASE != "https://data.unabated.com":
+    raise SystemExit("Set UNABATED_API_BASE_URL to https://data.unabated.com.")
 
 
 def sse_frames(lines, deadline=None):
@@ -365,19 +364,18 @@ This sample prints a summary of received events. It does not yet maintain a comp
 
 ## Browser `EventSource`
 
-Create the subscription through your application's authenticated server, then return the signed stream URL only to the authorized client. Do not place `UNABATED_API_KEY` in browser code. Pass your server's public `UNABATED_API_BASE_URL` configuration as the second argument: `https://data.unabated.com` for production or `https://data-sandbox.unabated.com` for sandbox. This base URL is safe to expose; the API key is not. The signed URL must belong to that same environment.
+Create the subscription through your application's authenticated server, then return the signed stream URL only to the authorized client. Do not place `UNABATED_API_KEY` in browser code. Pass `https://data.unabated.com` as the `UNABATED_API_BASE_URL` argument. This base URL is safe to expose; the API key is not. The signed URL must use the same API origin.
 
 ```javascript
 // `streamUrl` was created by your server for this authorized client.
 // It may be an absolute URL or the relative URL returned by the API.
 function openStream(streamUrl, UNABATED_API_BASE_URL) {
-  if (!["https://data.unabated.com", "https://data-sandbox.unabated.com"]
-      .includes(UNABATED_API_BASE_URL)) {
-    throw new Error("Choose the production or sandbox API base.");
+  if (UNABATED_API_BASE_URL !== "https://data.unabated.com") {
+    throw new Error("Set UNABATED_API_BASE_URL to https://data.unabated.com.");
   }
   const url = new URL(streamUrl, `${UNABATED_API_BASE_URL}/`);
   if (url.origin !== UNABATED_API_BASE_URL) {
-    throw new Error("The signed stream URL belongs to a different environment.");
+    throw new Error("The signed stream URL must use https://data.unabated.com.");
   }
   const source = new EventSource(url);
   source.addEventListener("market_line_update", event => {
@@ -411,7 +409,7 @@ Native `EventSource` handles the SSE framing and its usual reconnect behavior. I
 | `400` at creation | Check event names and discovered filter IDs. Correct the request. |
 | `401` at creation | Check the API key. Do not attempt the stream without a successful subscription response. |
 | `403` at creation | SSE is available for Concierge API and Enterprise API. Check the requested event family's available tiers; NFL in-game models are Enterprise API only. |
-| `404` | The SSE feature can be disabled on that environment. Confirm the correct API environment. |
+| `404` | Check the route and confirm that SSE is available for your API tier. |
 | `400` at stream admission | The subscription ID does not match its signed token. Use the returned URL unchanged. |
 | `401` at stream admission | The signed token is invalid or expired. Create a new subscription with a valid key. |
 | `403` at stream admission | Verify that the key is active and your API tier still covers the subscription's data. |
