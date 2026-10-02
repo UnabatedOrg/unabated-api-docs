@@ -82,7 +82,7 @@
       ]
     },
     "logo": "assets/unabated-logo.svg",
-    "theme": "none",
+    "theme": "assets/docs.css",
     "colorScheme": {
       "default": "dark",
       "showToggle": false
