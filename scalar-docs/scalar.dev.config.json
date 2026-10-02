@@ -258,7 +258,8 @@
             "proxyUrl": "",
             "theme": "none",
             "darkMode": true,
-            "hideDownloadButton": true,
+            "documentDownloadType": "none",
+            "modelsSectionLabel": "Schemas",
             "defaultHttpClient": {
               "targetKey": "shell",
               "clientKey": "curl"
