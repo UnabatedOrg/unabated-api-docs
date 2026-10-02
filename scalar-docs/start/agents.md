@@ -31,7 +31,8 @@ The [OpenAPI specification](https://data.unabated.com/swagger/v1/swagger.json) i
 ```text
 Build a server-side Unabated Free API integration using these docs.
 Read UNABATED_API_KEY and UNABATED_PARTNER_CODE from the environment.
-Use UNABATED_API_BASE_URL, defaulting to https://data.unabated.com.
+Require UNABATED_API_BASE_URL and confirm the intended production or
+sandbox environment before making requests. Do not default to production.
 Discover current leagues and market sources. Request one straight-odds
 board, check HTTP status plus the success/messages envelope, and show
 available selections using structured fields. Coordinate every odds

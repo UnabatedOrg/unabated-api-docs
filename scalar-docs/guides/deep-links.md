@@ -91,13 +91,15 @@ Use the code exactly as shown in key management. It is a public tracking identif
 
 `GET /deeplink` accepts comma-separated market line IDs and an optional matching list of points. Use IDs and points from your current odds response.
 
+Set `UNABATED_API_BASE_URL` explicitly to the [production or sandbox origin](/start/authentication#production-and-sandbox) matching your key. The example stops if it is missing.
+
 ```bash
 # These variables must come from real selections in your response.
 curl --fail-with-body --connect-timeout 5 --max-time 20 --get \
   --header "X-Api-Key: ${UNABATED_API_KEY}" \
   --data-urlencode "ids=${UNABATED_MARKET_LINE_IDS}" \
   --data-urlencode "points=${UNABATED_SELECTION_POINTS}" \
-  "${UNABATED_API_BASE_URL:-https://data.unabated.com}/deeplink"
+  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to the intended API origin}/deeplink"
 ```
 
 Use `_` for a selection without points when supplying a list of point values. If `points` is supplied, its item count must match `ids`. For Free callers, the operation supports at most 20 selections, all from the same included sportsbook, and returns a generic Gambly URL in `data.url` and `data.individualUrls`. Add your partner code before publishing that URL.

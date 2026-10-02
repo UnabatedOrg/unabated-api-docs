@@ -6,10 +6,11 @@ Create a subscription, open its signed URL, and handle named SSE frames. These e
 
 ## Before you run
 
-Use an API key with SSE access. Free API keys return `403` for this workflow. Discover a league ID from `GET /league`, and choose one within your key's scope. Set the following variables privately in your shell:
+Use an API key with SSE access. Free API keys return `403` for this workflow. Discover a league ID from `GET /league`, and choose one within your key's scope. Choose production (`https://data.unabated.com`) or sandbox (`https://data-sandbox.unabated.com`), then set the following variables privately in your shell:
 
 ```bash
-export UNABATED_API_BASE_URL="https://data.unabated.com"
+read -r -p "Intended API base URL: " UNABATED_API_BASE_URL
+export UNABATED_API_BASE_URL
 read -r -s -p "API key: " UNABATED_API_KEY; printf '\n'
 export UNABATED_API_KEY
 read -r -p "Discovered league ID: " UNABATED_LEAGUE_ID
@@ -32,7 +33,7 @@ Requires Bash, cURL, and Python 3. Save this as `stream.sh` and run `bash stream
 set -euo pipefail
 : "${UNABATED_API_KEY:?Set UNABATED_API_KEY privately}"
 : "${UNABATED_LEAGUE_ID:?Set a discovered UNABATED_LEAGUE_ID}"
-api_base="${UNABATED_API_BASE_URL:-https://data.unabated.com}"
+api_base="${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to the intended API origin}"
 case "$api_base" in
   https://data.unabated.com|https://data-sandbox.unabated.com) ;;
   *) echo "Choose the production or sandbox API base." >&2; exit 1 ;;
@@ -108,7 +109,10 @@ This is a wire-format demonstration. Do not send every output line directly to a
 Requires Node.js 20 or newer; no package installation is needed. Save as `stream.mjs` and run `node stream.mjs`. API-key operations stay on your server. This reader supports UTF-8, a leading BOM, LF/CRLF/CR line endings, multiline `data`, comments, opaque IDs, and `retry` hints.
 
 ```javascript
-const base = process.env.UNABATED_API_BASE_URL ?? "https://data.unabated.com";
+const base = process.env.UNABATED_API_BASE_URL;
+if (!base) {
+  throw new Error("Set UNABATED_API_BASE_URL to the intended API origin.");
+}
 const apiKey = process.env.UNABATED_API_KEY;
 const leagueId = Number(process.env.UNABATED_LEAGUE_ID);
 if (!apiKey || !Number.isSafeInteger(leagueId) || leagueId <= 0) {
@@ -252,7 +256,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs, urljoin, urlsplit
 from urllib.request import Request, urlopen
 
-BASE = os.environ.get("UNABATED_API_BASE_URL", "https://data.unabated.com")
+BASE = os.environ["UNABATED_API_BASE_URL"]
 API_KEY = os.environ["UNABATED_API_KEY"]
 LEAGUE_ID = int(os.environ["UNABATED_LEAGUE_ID"])
 if LEAGUE_ID <= 0:
