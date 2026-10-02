@@ -4,10 +4,10 @@ These docs are built for humans and agents working together. Start with the succ
 
 ## Read the documentation
 
-- [Quickstart](https://docs.unabated.com/start/quickstart): key setup, a first odds request, and the next action.
-- [API Reference](https://docs.unabated.com/reference): methods, parameters, request bodies, and response schemas.
-- [llms.txt](https://docs.unabated.com/llms.txt): a compact index of the documentation.
-- [llms-full.txt](https://docs.unabated.com/llms-full.txt): documentation content for tools that prefer one text resource.
+- [Quickstart](/start/quickstart): key setup, a first odds request, and the next action.
+- [API Reference](/reference): methods, parameters, request bodies, and response schemas.
+- [llms.txt](/llms.txt): a compact index of the documentation.
+- [llms-full.txt](/llms-full.txt): documentation content for tools that prefer one text resource.
 
 ## OpenAPI specification
 
@@ -16,12 +16,12 @@ The [OpenAPI specification](https://data.unabated.com/swagger/v1/swagger.json) i
 ## Integration rules for an agent
 
 1. Use `https://data.unabated.com` and confirm the API tier. Keep credentials in an environment variable or secrets store; never request a key in an ordinary chat message.
-2. Discover league names, bet type IDs, period types, and market source IDs from the [discovery endpoints](https://docs.unabated.com/guides/discovery). Do not copy a stale identifier list into application code.
+2. Discover league names, bet type IDs, period types, and market source IDs from the [discovery endpoints](/guides/discovery). Do not copy a stale identifier list into application code.
 3. Check HTTP status and, when present, `success` and `messages`. Do not treat an empty response as an authentication success test or a guarantee of sportsbook coverage.
 4. Serialize Free odds requests through one scheduler per API key. The five-second interval is shared across odds endpoints; honor `Retry-After` after a `429`.
 5. Read structured odds fields rather than parsing composite dictionary keys. Preserve IDs, prices, points, timestamps, and selection context.
 6. For a Free partner, add the partner code to returned generic Gambly links and test from the partner's own platform. Do not guess a sportsbook destination or fabricate a selection URL.
-7. Use SSE with Concierge API or Enterprise API. The NFL output model and additional datasets are available through Enterprise API according to your agreement.
+7. Use SSE with Concierge API or Enterprise API. Check each endpoint's available API tiers before requesting data.
 8. Use bounded retries and request timeouts. Report an unavailable API tier or unsupported data request rather than attempting to work around it.
 
 ## Example prompts

@@ -37,12 +37,12 @@ Do not put an API key in public browser JavaScript, a mobile application bundle,
 
 ## Signed stream URLs
 
-For Concierge API or Enterprise API streaming, create a subscription with your API-key header. The response supplies a signed stream URL. Connect to that returned URL as described in the [streaming guide](https://docs.unabated.com/guides/streaming/lifecycle); treat the URL as a temporary credential and do not log or publish it.
+For Concierge API or Enterprise API streaming, create a subscription with your API-key header. The response supplies a signed stream URL. Connect to that returned URL as described in the [streaming guide](/guides/streaming/lifecycle); treat the URL as a temporary credential and do not log or publish it.
 
 A browser `EventSource` can open the signed URL without putting your API key in the browser. Your backend should create the subscription and deliver the signed URL only to an authorized client. The signed URL is not a permanent replacement for a key.
 
 ## Authentication and API tiers
 
-A `401` means authentication failed or is required. A `403` means the requested endpoint or data is unavailable for your API tier or Enterprise API agreement. Check [access tiers](https://docs.unabated.com/start/access-tiers) and the endpoint's availability before trying again; changing transport or repeating the request does not change your tier.
+A `401` means authentication failed or is required. A `403` means the requested endpoint or data is unavailable for your API tier or Enterprise API agreement. Check [access tiers](/start/access-tiers) and the endpoint's availability before trying again; changing transport or repeating the request does not change your tier.
 
-For successful HTTP responses, also inspect the body: endpoints using the public response envelope can return `success: false` with explanatory `messages`. See [errors and limits](https://docs.unabated.com/guides/errors-and-limits).
+For successful HTTP responses, also inspect the body: endpoints using the public response envelope can return `success: false` with explanatory `messages`. See [errors and limits](/guides/errors-and-limits).

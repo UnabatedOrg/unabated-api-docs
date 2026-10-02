@@ -10,7 +10,7 @@ Turn a text description or image into matched sportsbook bet slips. Generation i
 
 For a text request, send `type: "text"` and `content.text`. The example prompt describes the kind of bet to find; its results depend on current availability.
 
-Set `UNABATED_API_BASE_URL` explicitly to the [API base URL](https://docs.unabated.com/start/authentication#api-base-url), `https://data.unabated.com`. The examples stop if it is missing.
+Set `UNABATED_API_BASE_URL` explicitly to the [API base URL](/start/authentication#api-base-url), `https://data.unabated.com`. The examples stop if it is missing.
 
 ```bash
 curl --fail-with-body --connect-timeout 5 --max-time 30 \
@@ -183,4 +183,4 @@ Each item in `betSlips` describes one sportsbook:
 Show matched-leg counts and actual returned selections to your user. Do not present a partially matched slip as if every requested leg was found. Odds and availability can change before the sportsbook opens, and generation does not place a bet.
 </scalar-callout>
 
-Free requests carry your partner attribution into returned bet-slip links. Publish those links as returned; the manual suffix workflow for generic odds links is explained separately in [tracked deep links](https://docs.unabated.com/guides/deep-links).
+Free requests carry your partner attribution into returned bet-slip links. Publish those links as returned; the manual suffix workflow for generic odds links is explained separately in [tracked deep links](/guides/deep-links).

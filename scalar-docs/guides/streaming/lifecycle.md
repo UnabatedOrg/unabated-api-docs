@@ -2,7 +2,7 @@
 
 **Available for: Concierge API · Enterprise API**
 
-Create a subscription, open its signed URL, and handle named SSE frames. These examples run one bounded, 60-second session, then close it. They establish the complete authentication and framing lifecycle; add the [snapshot and recovery workflow](https://docs.unabated.com/guides/streaming/recovery) before using streamed updates as a complete production view.
+Create a subscription, open its signed URL, and handle named SSE frames. These examples run one bounded, 60-second session, then close it. They establish the complete authentication and framing lifecycle; add the [snapshot and recovery workflow](/guides/streaming/recovery) before using streamed updates as a complete production view.
 
 ## Before you run
 
@@ -18,7 +18,7 @@ export UNABATED_LEAGUE_ID
 
 The `read` commands above use Bash syntax. Run them in Bash, or set the same environment variables through your normal secret manager. The API base URL is `https://data.unabated.com`.
 
-The request subscribes to `market_line_update` and `event_update` for your selected league. It does not request models, news, or other additional features. Further narrow it with discovered market/source/bet-type IDs if needed.
+The request subscribes to `market_line_update` and `event_update` for your selected league. Further narrow it with discovered market/source/bet-type IDs if needed.
 
 ## Full runnable examples
 
@@ -239,7 +239,7 @@ main().catch(error => {
 });
 ```
 
-The parser captures `retry` hints and IDs, but this one-session sample deliberately does not retry or maintain full odds state. Follow [recovery](https://docs.unabated.com/guides/streaming/recovery) to add bounded retries, `Last-Event-ID`, and authoritative-state repair.
+The parser captures `retry` hints and IDs, but this one-session sample deliberately does not retry or maintain full odds state. Follow [recovery](/guides/streaming/recovery) to add bounded retries, `Last-Event-ID`, and authoritative-state repair.
 
 </scalar-tab>
 <scalar-tab title="Python">
@@ -408,7 +408,7 @@ Native `EventSource` handles the SSE framing and its usual reconnect behavior. I
 | --- | --- |
 | `400` at creation | Check event names and discovered filter IDs. Correct the request. |
 | `401` at creation | Check the API key. Do not attempt the stream without a successful subscription response. |
-| `403` at creation | SSE is available for Concierge API and Enterprise API. Check the requested event family's available tiers; NFL in-game models are Enterprise API only. |
+| `403` at creation | SSE is available for Concierge API and Enterprise API. Check the requested event family's available tiers. |
 | `404` | Check the route and confirm that SSE is available for your API tier. |
 | `400` at stream admission | The subscription ID does not match its signed token. Use the returned URL unchanged. |
 | `401` at stream admission | The signed token is invalid or expired. Create a new subscription with a valid key. |
@@ -419,4 +419,4 @@ Native `EventSource` handles the SSE framing and its usual reconnect behavior. I
 
 Subscription creation uses the standard `success`/`messages` envelope. Stream admission failures can have an empty response body, so check the HTTP status and content type before decoding frames. A connection that already sent `200` can later close on expiry or lost access without emitting a new HTTP status.
 
-Next: [Choose precise filters](https://docs.unabated.com/guides/streaming/events-and-filters) and [initialize, reconnect, and repair state](https://docs.unabated.com/guides/streaming/recovery).
+Next: [Choose precise filters](/guides/streaming/events-and-filters) and [initialize, reconnect, and repair state](/guides/streaming/recovery).

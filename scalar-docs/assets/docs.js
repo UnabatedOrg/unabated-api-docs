@@ -3,9 +3,9 @@
   const commonPrompt = 'Read the access tiers and endpoint contracts first. Use https://data.unabated.com and keep my API key in a server-side environment variable. Discover current league, market, sportsbook, and bet type IDs. Handle 401, 403, 429, and temporary unavailability separately. Keep API keys out of client code and logs.';
   const streamingPrompt = 'Create a filtered SSE subscription and open its returned signed streamUrl. Treat signed URLs as private and never log them. Buffer incoming updates while loading the latest REST odds snapshot, then reconcile by stable IDs and ordering fields before applying buffered updates. On disconnect, reconnect with bounded backoff; create a new subscription if the signed URL has expired. Restore current state from a fresh snapshot while buffering stream updates, then resume processing. Bound buffers and timeouts, repair uncertain continuity with REST, and close the stream on shutdown. Do not assume durable replay.';
   const prompts = {
-    free: 'Build a server-side Unabated Free API integration. ' + commonPrompt + ' Poll REST odds no more than once every five seconds per API key across all odds endpoints. Append my public utm_campaign partner code exactly once to every published Gambly deep link. Include a way to test a real link and confirm a tracked click. Free API does not include SSE or NFL model data.',
+    free: 'Build a server-side Unabated Free API integration. ' + commonPrompt + ' Poll REST odds no more than once every five seconds per API key across all odds endpoints. Append my public utm_campaign partner code exactly once to every published Gambly deep link. Include a way to test a real link and confirm a tracked click. Free API does not include SSE.',
     concierge: 'Build a server-side Unabated Concierge API integration for NFL, NBA, MLB, NHL, or WNBA. ' + commonPrompt + ' ' + streamingPrompt + ' Use the documented Concierge API data coverage.',
-    enterprise: 'Build a server-side Unabated Enterprise API integration. ' + commonPrompt + ' ' + streamingPrompt + ' Check the available tiers on each endpoint and use the leagues, sportsbooks, and additional data features provisioned for our integration. Request NFL in-game model events only if our integration uses that data, and process only ready model outputs as current.'
+    enterprise: 'Build a server-side Unabated Enterprise API integration. ' + commonPrompt + ' ' + streamingPrompt + ' Check the available tiers on each endpoint and use the leagues, sportsbooks, and additional data features provisioned for our integration.'
   };
   const tierNames = { free: 'Free API', concierge: 'Concierge API', enterprise: 'Enterprise API' };
   const origin = 'https://data.unabated.com';
@@ -18,7 +18,7 @@
   const notes = {
     free: 'Free odds are delayed by at least 15 seconds. Make one odds request every five seconds per API key, shared across all odds endpoints.',
     concierge: 'Concierge provides real-time odds and live streaming for NFL, NBA, MLB, NHL, and WNBA. Check each endpoint for available tiers.',
-    enterprise: 'Enterprise supports additional data features. NFL in-game model endpoints are available for Enterprise API. Check each endpoint for available tiers.'
+    enterprise: 'Enterprise supports additional data features. Check each endpoint for available tiers.'
   };
   const onboard = {
     free: 'Complete your content partner profile, then generate a key in your account. Already a Concierge subscriber? Your API key management is available in the same place.',
@@ -58,41 +58,6 @@
     }
   }
   function initialize() {
-    // Customer documentation links use the canonical site, including links
-    // Scalar creates for the logo and previous/next page controls.
-    document.querySelectorAll('a[href]').forEach(el => {
-      const href = el.getAttribute('href');
-      if (!href || !/^(\/|#)/.test(href) || href.startsWith('//')) return;
-      const target = new URL(href, location.href);
-      el.href = 'https://docs.unabated.com' + target.pathname + target.search + target.hash;
-    });
-    // Scalar builds reference permalinks from the hosting origin. Preserve its
-    // endpoint/property anchor while copying the public documentation origin.
-    document.querySelectorAll('button').forEach(button => {
-      const label = button.querySelector('.screenreader-only, .sr-only')?.textContent.trim();
-      if (!label || !/^Copy link(?: to .+)?$/.test(label) || button.dataset.uaCanonicalCopy) return;
-      const target = button.parentElement.querySelector('[id*="/tag/"]') || button.closest('[id*="/tag/"]');
-      if (!target) return;
-      button.dataset.uaCanonicalCopy = 'true';
-      button.addEventListener('click', async event => {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        const anchor = target.id.slice(target.id.indexOf('/tag/') + 1);
-        try {
-          await navigator.clipboard.writeText('https://docs.unabated.com' + location.pathname + '#' + anchor);
-          button.setAttribute('aria-label', 'Link copied');
-          button.title = 'Link copied';
-          setTimeout(() => {
-            if (button.isConnected) {
-              button.removeAttribute('aria-label');
-              button.removeAttribute('title');
-            }
-          }, 1800);
-        } catch {
-          button.title = 'Clipboard access is unavailable';
-        }
-      }, true);
-    });
     document.querySelectorAll('[data-ua-quickstart]').forEach(root => {
       if (!root.dataset.uaInitialized) {
         root.dataset.uaInitialized = 'true';

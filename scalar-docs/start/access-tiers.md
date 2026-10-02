@@ -24,7 +24,7 @@ Start at [Free API signup](https://tools.unabated.com/free-api). Sign in or crea
 Free access is provided to drive sportsbook traffic through Gambly deep links. Add your partner code to every generic deep link you publish, and test the links from your own site or platform. Untagged clicks cannot be credited to you. Access may be revoked at Unabated/Gambly's discretion when the partner conditions are not met.
 </scalar-callout>
 
-The included providers are DraftKings, FanDuel, MGM, Caesars, theScoreBet, PrizePicks, DraftKings Pick6, Fanatics, Novig, Underdog, ProphetX, Kalshi, Underdog Prediction Markets, and Polymarket. Use the [market source discovery endpoint](https://docs.unabated.com/guides/discovery) to find the IDs and current availability for the league and market you need.
+The included providers are DraftKings, FanDuel, MGM, Caesars, theScoreBet, PrizePicks, DraftKings Pick6, Fanatics, Novig, Underdog, ProphetX, Kalshi, Underdog Prediction Markets, and Polymarket. Use the [market source discovery endpoint](/guides/discovery) to find the IDs and current availability for the league and market you need.
 
 Free odds have a minimum delay of 15 seconds. Snapshot publication, transport, and unchanged markets can make a response older; this is not a promise that every line is exactly 15 seconds old. Polling faster does not make the data fresher.
 
@@ -36,13 +36,13 @@ Concierge takes precedence while active. If you started as a Free content partne
 
 ## Enterprise API: match the data to your integration
 
-Enterprise API coverage follows your agreement, including leagues, books, streams, and additional datasets. The NFL in-game output model is available through Enterprise API; it is not part of Free API or Concierge API.
+Enterprise API coverage follows your agreement, including leagues, books, streams, and additional datasets.
 
-Contact your Unabated representative to confirm which datasets your Enterprise API agreement includes before building your integration.
+[Contact your Unabated representative](https://unabated.com/odds-api/enterprise#enterprise-contact) to confirm which datasets your Enterprise API agreement includes before building your integration.
 
 ## Next steps
 
-- [Make your first request](https://docs.unabated.com/start/quickstart).
-- [Keep your key secure](https://docs.unabated.com/start/authentication).
-- [Publish and test a tracked link](https://docs.unabated.com/guides/deep-links).
-- [Connect a live stream with Concierge API or Enterprise API](https://docs.unabated.com/guides/streaming/lifecycle).
+- [Make your first request](/start/quickstart).
+- [Keep your key secure](/start/authentication).
+- [Publish and test a tracked link](/guides/deep-links).
+- [Connect a live stream with Concierge API or Enterprise API](/guides/streaming/lifecycle).
