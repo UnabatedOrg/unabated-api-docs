@@ -10,7 +10,7 @@ Turn a text description or image into matched sportsbook bet slips. Generation i
 
 For a text request, send `type: "text"` and `content.text`. The example prompt describes the kind of bet to find; its results depend on current availability.
 
-Set `UNABATED_API_BASE_URL` explicitly to the [production or sandbox origin](/start/authentication#production-and-sandbox) matching your key. The examples stop if it is missing.
+Set `UNABATED_API_BASE_URL` explicitly to the [API base URL](/start/authentication#api-base-url), `https://data.unabated.com`. The examples stop if it is missing.
 
 ```bash
 curl --fail-with-body --connect-timeout 5 --max-time 30 \
@@ -18,7 +18,7 @@ curl --fail-with-body --connect-timeout 5 --max-time 30 \
   --header "X-Api-Key: ${UNABATED_API_KEY}" \
   --header "Content-Type: application/json" \
   --data '{"type":"text","generateMobileLinks":true,"content":{"text":"NFL three-game moneyline parlay"}}' \
-  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to the intended API origin}/api/v1/bet/generate"
+  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to https://data.unabated.com}/api/v1/bet/generate"
 ```
 
 The response is a **direct object**, not the `data/success/messages` envelope used by odds endpoints. A representative accepted response looks like:
@@ -54,7 +54,7 @@ Alternatively, send `content.base64String` containing the image data. A `compres
 ```bash
 curl --fail-with-body --connect-timeout 5 --max-time 20 \
   --header "X-Api-Key: ${UNABATED_API_KEY}" \
-  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to the intended API origin}/api/v1/bet/status/${UNABATED_REQUEST_ID}"
+  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to https://data.unabated.com}/api/v1/bet/status/${UNABATED_REQUEST_ID}"
 ```
 
 | Status | What to do |
@@ -78,7 +78,7 @@ Node.js 20 or later; save as `bet-slip.mjs` and run on your server with `UNABATE
 const key = process.env.UNABATED_API_KEY;
 if (!key) throw new Error('Set UNABATED_API_KEY');
 const base = process.env.UNABATED_API_BASE_URL;
-if (!base) throw new Error('Set UNABATED_API_BASE_URL to the intended API origin');
+if (!base) throw new Error('Set UNABATED_API_BASE_URL to https://data.unabated.com');
 const headers = { 'X-Api-Key': key, 'Content-Type': 'application/json' };
 
 async function request(path, options = {}) {

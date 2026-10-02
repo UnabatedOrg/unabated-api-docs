@@ -1,9 +1,8 @@
 (() => {
   'use strict';
   const prompt = 'Build a server-side integration using the current Unabated documentation. Read /llms.txt, the access tiers, and the endpoint contract first. Use an environment variable for my API key. Discover current league, market, sportsbook, and bet type IDs. For Free access, request odds no more than once every five seconds per key across odds endpoints and append my public utm_campaign partner code exactly once to every published Gambly deep link. Handle 401, 403, 429, and temporary unavailability separately. Do not assume SSE or model access. Include a way to test a real link and confirm a tracked click.';
-  const sandbox = location.hostname === 'docs-sandbox.unabated.com' || location.hostname === 'unabated-sandbox.apidocumentation.com' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-  const origin = sandbox ? 'https://data-sandbox.unabated.com' : 'https://data.unabated.com';
-  const account = sandbox ? 'https://becoming-tools.unabated.com/api-keys' : 'https://tools.unabated.com/api-keys';
+  const origin = 'https://data.unabated.com';
+  const account = 'https://tools.unabated.com/api-keys';
   const samples = {
     curl: `curl --fail-with-body --max-time 20 \\\n  "\${UNABATED_API_BASE_URL:-${origin}}/market/nfl/straight/odds?betTypeId=1" \\\n  -H "X-Api-Key: $UNABATED_API_KEY"`,
     javascript: `// Server-side JavaScript · Node.js 20+\nconst base = process.env.UNABATED_API_BASE_URL || '${origin}';\nconst key = process.env.UNABATED_API_KEY;\nif (!key) throw new Error('Set UNABATED_API_KEY first');\nconst response = await fetch(\n  base + '/market/nfl/straight/odds?betTypeId=1',\n  { headers: { 'X-Api-Key': key }, signal: AbortSignal.timeout(20000) }\n);\nif (!response.ok) {\n  throw new Error('HTTP ' + response.status +\n    '; Retry-After: ' + (response.headers.get('Retry-After') || 'none'));\n}\nconst payload = await response.json();\nif (!payload.success) throw new Error('Request was not successful');\nconsole.log(payload.data?.odds ?? {});`,
@@ -35,7 +34,7 @@
     const streamStepNumber = root.querySelector('.ua-stream-step .ua-step-number');
     if (streamStepNumber) streamStepNumber.textContent = tier === 'free' ? '4' : '3';
     const setup = root.querySelector('[data-ua-setup]');
-    if (setup) setup.textContent = language === 'python' ? 'Install requests with pip install requests, then set UNABATED_API_KEY. Override UNABATED_API_BASE_URL when using a different environment.' : language === 'javascript' ? 'Run this on your server with Node.js 20+ and UNABATED_API_KEY set. Override UNABATED_API_BASE_URL when using a different environment.' : 'Set UNABATED_API_KEY before running the command. The default shown here matches this documentation environment.';
+    if (setup) setup.textContent = language === 'python' ? 'Install requests with pip install requests, then set UNABATED_API_KEY. This example uses https://data.unabated.com.' : language === 'javascript' ? 'Run this on your server with Node.js 20+ and UNABATED_API_KEY set. This example uses https://data.unabated.com.' : 'Set UNABATED_API_KEY before running the command. This example uses https://data.unabated.com.';
     root.querySelectorAll('[data-ua-account-link]').forEach(el => el.href = account);
   }
   async function copy(button, text, root) {
@@ -60,18 +59,11 @@
           if (button.dataset.uaLanguage) { language = button.dataset.uaLanguage; render(root); }
           if (button.dataset.uaTier) { tier = button.dataset.uaTier; render(root); }
           if (button.hasAttribute('data-ua-copy-code')) copy(button, button.closest('.ua-code').querySelector('pre').textContent, root);
-          if (button.hasAttribute('data-ua-copy-prompt')) copy(button, 'Read ' + location.origin + '/llms.txt. ' + prompt, root);
+          if (button.hasAttribute('data-ua-copy-prompt')) copy(button, 'Read https://docs.unabated.com/llms.txt. ' + prompt, root);
         });
         render(root);
       }
     });
-    // Keep onboarding links in the current environment after client-side
-    // navigation. Preserve explicitly labelled environment links in tables.
-    if (sandbox) {
-      document.querySelectorAll('a[href="https://tools.unabated.com/api-keys"], a[href="https://tools.unabated.com/free-api"]').forEach(el => {
-        if (!el.closest('table')) el.href = el.href.replace('https://tools.unabated.com', 'https://becoming-tools.unabated.com');
-      });
-    }
     // Multi-page Scalar Docs does not forward modelsSectionLabel. This is the
     // response schema index, distinct from the NFL model endpoint.
     if (location.pathname.startsWith('/reference')) {

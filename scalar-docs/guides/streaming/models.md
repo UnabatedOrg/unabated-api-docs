@@ -98,7 +98,8 @@ The optional `includeSnapshot` market-line feature does not send a model-state s
 
 ```text
 Integrate Unabated NFL in-game fair prices for Enterprise API. Confirm that
-our agreement includes this dataset. Create the model SSE subscription, load its REST
+our agreement includes this dataset. Use https://data.unabated.com and obtain
+my authorization before making API requests. Create the model SSE subscription, load its REST
 snapshot, and maintain full replacement state by leagueId and eventId.
 Only ready output may drive calculations. Handle expired and unavailable
 transitions, reject stale output, suspend calculations on uncertain state,

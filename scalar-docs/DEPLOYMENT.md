@@ -4,15 +4,17 @@ The two Scalar projects share the guides and assets in this repository. Both con
 
 | Scalar project | Tracked branch | Configuration path | Documentation site | Swagger source and request server |
 | --- | --- | --- | --- | --- |
-| Unabated API - Dev | `dev` | `scalar-docs/scalar.dev.config.json` | `docs-sandbox.unabated.com` | `https://data-sandbox.unabated.com/swagger/v1/swagger.json`; `https://data-sandbox.unabated.com` |
+| Unabated API - Dev | `dev` | `scalar-docs/scalar.dev.config.json` | `docs-sandbox.unabated.com` | `https://data-sandbox.unabated.com/swagger/v1/swagger.json`; `https://data.unabated.com` |
 | Unabated API | `main` | `scalar-docs/scalar.config.json` | `docs.unabated.com` | `https://data.unabated.com/swagger/v1/swagger.json`; `https://data.unabated.com` |
 
 Tracked branches are selected in each project's Scalar **Settings → Git Sync**. Configuration paths are selected under **Settings → Advanced**. After the initial export PR is merged, switch the production project from the temporary import branch to `main`; merging that PR does not switch the tracked branch automatically.
 
+This file is an internal deployment runbook and is not a published page. The dev site's private Swagger source allows review of upcoming reference changes. Both sites describe the customer API at `https://data.unabated.com` and link to `https://tools.unabated.com/api-keys`. Public guides, generated examples, page titles, and exports must not offer sandbox access. The request builder on the dev docs site also targets the customer API; do not submit a test request unless the intended production call is authorized.
+
 ## Make and review changes in dev
 
 1. Change shared Markdown guides and assets on a development branch, then merge the reviewed changes into `dev`.
-2. If changing navigation, routes, or reference presentation, make the same change in both configuration files. Keep domains, subdomains, Swagger URLs, and request-builder servers specific to each environment.
+2. If changing navigation, routes, or reference presentation, make the same change in both configuration files. Keep docs domains, subdomains, and Swagger source URLs specific to each environment; customer request-builder servers and account links are identical.
 3. Run the repository validator:
 
    ```bash

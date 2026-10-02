@@ -48,7 +48,7 @@ For a reusable integration, use URL parsing so repeated processing replaces the 
 function trackedOddsLink(returnedLink, partnerCode) {
   if (!partnerCode) throw new Error('A partner code is required');
   const url = new URL(returnedLink);
-  const allowedOrigins = new Set(['https://www.gambly.com', 'https://dev.gambly.com']);
+  const allowedOrigins = new Set(['https://www.gambly.com']);
   if (!allowedOrigins.has(url.origin) || !url.pathname.startsWith('/deeplink/odds/')) {
     throw new Error('Expected a generic Gambly odds link from the API');
   }
@@ -70,7 +70,7 @@ def tracked_odds_link(returned_link, partner_code):
     if not partner_code:
         raise ValueError('A partner code is required')
     url = urlsplit(returned_link)
-    allowed_hosts = {'www.gambly.com', 'dev.gambly.com'}
+    allowed_hosts = {'www.gambly.com'}
     if url.scheme != 'https' or url.netloc not in allowed_hosts or not url.path.startswith('/deeplink/odds/'):
         raise ValueError('Expected a generic Gambly odds link from the API')
     query = [(key, value) for key, value in parse_qsl(url.query, keep_blank_values=True)
@@ -91,7 +91,7 @@ Use the code exactly as shown in key management. It is a public tracking identif
 
 `GET /deeplink` accepts comma-separated market line IDs and an optional matching list of points. Use IDs and points from your current odds response.
 
-Set `UNABATED_API_BASE_URL` explicitly to the [production or sandbox origin](/start/authentication#production-and-sandbox) matching your key. The example stops if it is missing.
+Set `UNABATED_API_BASE_URL` explicitly to the [API base URL](/start/authentication#api-base-url), `https://data.unabated.com`. The example stops if it is missing.
 
 ```bash
 # These variables must come from real selections in your response.
@@ -99,7 +99,7 @@ curl --fail-with-body --connect-timeout 5 --max-time 20 --get \
   --header "X-Api-Key: ${UNABATED_API_KEY}" \
   --data-urlencode "ids=${UNABATED_MARKET_LINE_IDS}" \
   --data-urlencode "points=${UNABATED_SELECTION_POINTS}" \
-  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to the intended API origin}/deeplink"
+  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to https://data.unabated.com}/deeplink"
 ```
 
 Use `_` for a selection without points when supplying a list of point values. If `points` is supplied, its item count must match `ids`. For Free callers, the operation supports at most 20 selections, all from the same included sportsbook, and returns a generic Gambly URL in `data.url` and `data.individualUrls`. Add your partner code before publishing that URL.

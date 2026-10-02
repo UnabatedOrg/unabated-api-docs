@@ -1,6 +1,6 @@
 <div class="ua-quickstart" data-ua-quickstart>
 <div class="ua-eyebrow">Start building <span>›</span> Quickstart</div>
-<h1>Your first odds request.<br>Your first tracked deep link.</h1>
+<h1>Your first odds request.</h1>
 <p class="ua-intro">Build with Unabated market data in a few clear steps. For developers, content partners, and the agents helping them.</p>
 
 <div class="ua-agent">
@@ -14,9 +14,9 @@
 
 <div class="ua-step"><span class="ua-step-number" aria-hidden="true">2</span><div><h2>Request an odds snapshot</h2><p>This example requests NFL moneyline odds. <a href="/guides/discovery">Discover current leagues and bet types</a> to request another market. Read the returned snapshot from <code>data.odds</code>.</p>
 <div class="ua-code"><div class="ua-code-top"><div class="ua-tabs" aria-label="Request language"><button type="button" data-ua-language="curl" aria-pressed="true">cURL</button><button type="button" data-ua-language="javascript" aria-pressed="false">JavaScript</button><button type="button" data-ua-language="python" aria-pressed="false">Python</button></div><button type="button" class="ua-copy" data-ua-copy-code>Copy</button></div><pre data-ua-request-code aria-live="polite"><code>curl --fail-with-body --max-time 20 \
-  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to the intended API origin}/market/nfl/straight/odds?betTypeId=1" \
+  "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to https://data.unabated.com}/market/nfl/straight/odds?betTypeId=1" \
   -H "X-Api-Key: $UNABATED_API_KEY"</code></pre></div>
-<p class="ua-small" data-ua-setup>Set <code>UNABATED_API_KEY</code> and <code>UNABATED_API_BASE_URL</code> before running the command. Choose the matching <a href="/start/authentication#production-and-sandbox">production or sandbox environment</a>.</p>
+<p class="ua-small" data-ua-setup>Set <code>UNABATED_API_KEY</code> privately and <code>UNABATED_API_BASE_URL</code> to <code>https://data.unabated.com</code> before running the command. See <a href="/start/authentication#api-base-url">API key setup</a>.</p>
 <div class="ua-note"><span class="ua-icon" aria-hidden="true">◷</span><p data-ua-tier-note aria-live="polite">Free odds are delayed by at least 15 seconds. Make one odds request every five seconds per API key, shared across all odds endpoints.</p></div>
 <details class="ua-response"><summary>What a successful response looks like</summary><pre><code>{
   "success": true,
