@@ -91,7 +91,7 @@ curl --fail-with-body --connect-timeout 5 --max-time 20 \
   "${UNABATED_API_BASE_URL:?Set UNABATED_API_BASE_URL to https://data.unabated.com}/market/nfl/straight/sources"
 ```
 
-The source response contains active public sportsbooks within your API coverage, including their `id`, `name`, logo URLs, and status fields. A source being present does not guarantee a usable line for every event. Inspect the returned odds and line status.
+The source response contains active public sportsbooks within your API coverage, including `id`, `name`, logo URLs, `isActive`, and numeric `statusId`, `propsStatusId`, and `futuresStatusId` fields. Check `disabledMarketTypeIds` and the [source status values](/guides/response-concepts#source-status); a source being present does not guarantee a usable line for every event. Inspect the returned odds and line status.
 
 ## Cache metadata deliberately
 

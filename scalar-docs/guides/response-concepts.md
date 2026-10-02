@@ -72,7 +72,48 @@ These are event/group statuses. A live event does not imply that every sportsboo
 | `2` | Unavailable |
 | `3` | Price unknown |
 
-Also inspect `disabled` and the presence of the required price/link fields. Do not show a disabled or unavailable line as an actionable bet merely because you still have its old URL. Source status fields have their own enum; use the source schema rather than applying this market-line table to them.
+Also inspect `disabled` and the presence of the required price/link fields. Do not show a disabled or unavailable line as an actionable bet merely because you still have its old URL. Source status fields use the separate values below.
+
+## Source status
+
+Market source `statusId`, `propsStatusId`, and `futuresStatusId` are JSON integers. They describe the source's overall, props, and futures status respectively.
+
+| Value | Meaning |
+| --- | --- |
+| `1` | High frequency |
+| `2` | Low frequency |
+| `3` | Offline |
+
+A returned `0` has no defined source-status meaning; handle it as unknown. Preserve unrecognized numeric values without treating them as available. Also inspect `isActive`, `disabledMarketTypeIds`, and the individual market line before using a source's price. These source statuses do not specify a polling interval or replace the market-line status.
+
+## Player priority
+
+Player `priorityType` is a JSON integer when present. Player records use `0` for normal priority and `1` for highest priority. Values `2` and `3` are retained for compatibility; do not assign them an additional ranking meaning. The field can be omitted when no priority is supplied.
+
+## Partner identifiers
+
+Partner metadata uses the JSON property names `fanduel` and `sportradar`. Available mappings contain string identifiers:
+
+| Object | Identifier inside each partner mapping |
+| --- | --- |
+| `partnerEventData` | `eventId` |
+| `partnerTeamData` | `teamId` |
+| `partnerPlayerData` | `playerId` |
+| `partnerOddsData` (`fanduel` only) | `marketId` and `selectionId` |
+
+For example, a player mapping has this structure:
+
+```json
+{
+  "partnerPlayerData": {
+    "sportradar": {
+      "playerId": "provider-player-id"
+    }
+  }
+}
+```
+
+The example identifier is a placeholder. Partner mappings are optional: `fanduel` depends on your API coverage, and either mapping can be absent when no matching identifier exists. Keep provider identifiers as strings and separate from the API's own numeric event, team, and player IDs.
 
 ## Prices and optional fields
 
