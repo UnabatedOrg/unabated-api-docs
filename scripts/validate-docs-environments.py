@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Validate the environment boundaries of the two Scalar documentation sites."""
+"""Validate separate docs sites with production-only customer API guidance."""
 
 import argparse
 import copy
 import json
+import re
 from pathlib import Path
 import sys
 from urllib.parse import urlparse
@@ -15,12 +16,16 @@ ENVIRONMENTS = {
         "domain": "docs.unabated.com",
         "subdomain": "unabated",
         "api": "https://data.unabated.com",
+        "request_api": "https://data.unabated.com",
+        "account": "https://tools.unabated.com/api-keys",
     },
     "dev": {
         "config": "scalar-docs/scalar.dev.config.json",
         "domain": "docs-sandbox.unabated.com",
         "subdomain": "unabated-sandbox",
         "api": "https://data-sandbox.unabated.com",
+        "request_api": "https://data.unabated.com",
+        "account": "https://tools.unabated.com/api-keys",
     },
 }
 
@@ -77,6 +82,12 @@ def validate_environment(name, settings, repo_root, errors):
         errors.append(f"{name}.versions: at least one version is required")
     for version_name, version in versions.items():
         location = f"{name}.versions.{version_name}"
+        account_links = [item.get("to") for item in version.get("header", []) if item.get("title") == "Get your API key ↗"]
+        if account_links != [settings["account"]]:
+            errors.append(f"{location}.header: expected one API key link at {settings['account']!r}")
+        for item in version.get("header", []):
+            if item.get("title") != "Get your API key ↗" and not item.get("to", "").startswith("/"):
+                errors.append(f"{location}.header: documentation navigation must use local page routes")
         routes = object_field(version, "routes", location, errors)
         reference = object_field(routes, "/reference", location + ".routes", errors)
         if reference.get("type") != "openapi":
@@ -85,10 +96,12 @@ def validate_environment(name, settings, repo_root, errors):
         if reference.get("url") != expected_source:
             errors.append(f"{location}.routes./reference.url: expected {expected_source!r}")
         reference_config = object_field(reference, "config", location + ".routes./reference", errors)
+        if reference_config.get("documentDownloadType") != "none":
+            errors.append(f"{location}.routes./reference.config.documentDownloadType: expected 'none'; readable guides do not require a JSON download")
         servers = reference_config.get("servers")
         urls = [server.get("url") for server in servers if isinstance(server, dict)] if isinstance(servers, list) else None
-        if urls != [settings["api"]] or not isinstance(servers, list) or len(servers) != 1:
-            errors.append(f"{location}.routes./reference.config.servers: expected exactly one server at {settings['api']!r}")
+        if urls != [settings["request_api"]] or not isinstance(servers, list) or len(servers) != 1:
+            errors.append(f"{location}.routes./reference.config.servers: expected exactly one customer API server at {settings['request_api']!r}")
 
     checked_references = 0
     for location, target in local_references(config):
@@ -117,9 +130,6 @@ def shared_versions(config):
         if not isinstance(reference, dict):
             continue
         reference.pop("url", None)
-        reference_config = reference.get("config", {})
-        if isinstance(reference_config, dict):
-            reference_config.pop("servers", None)
     return versions
 
 
@@ -140,6 +150,60 @@ def difference_paths(left, right, location="versions"):
             yield from difference_paths(left_child, right_child, f"{location}[{index}]")
     elif left != right:
         yield location
+
+
+def validate_content(config, config_path, errors):
+    """Check only published sources, including HTML links and authored code blocks."""
+    routes = set()
+    pages = []
+
+    def visit(children, prefix=""):
+        for segment, route in children.items():
+            path = prefix + segment
+            routes.add(path)
+            if route.get("type") == "page":
+                pages.append(config_path.parent / route["filepath"])
+            visit(route.get("children", {}), path)
+
+    for version in config.get("versions", {}).values():
+        visit(version.get("routes", {}))
+    footer = config.get("siteConfig", {}).get("footer", {}).get("filepath")
+    if footer:
+        pages.append(config_path.parent / footer)
+    routes.update(redirect["from"] for redirect in config.get("siteConfig", {}).get("routing", {}).get("redirects", []) if ":" not in redirect["from"])
+    routes.update({"/llms.txt", "/llms-full.txt"})
+    deprecated = re.compile(r"web[ -]?sockets?|realtime\.(?:unabated|nimbeta|unibeta|unabeta)\.com", re.I)
+    internal_access = re.compile(r"\b(?:entitle\w*|privilege\w*)\b|\b(?:api|role):[a-z_]", re.I)
+    private_projections = re.compile(r"projectionSourceIds|projection_set_update|/projections?\b", re.I)
+    private_environment = re.compile(r"\bsandbox\b|becoming-tools\.unabated\.com", re.I)
+    for page in pages:
+        if not page.is_file():
+            continue  # Missing files are reported by the environment boundary checks.
+        text = page.read_text(encoding="utf-8")
+        if deprecated.search(text):
+            errors.append(f"{page.name}: deprecated transport or host remains in published content")
+        if internal_access.search(text):
+            errors.append(f"{page.name}: public availability must use tier labels, without internal access details")
+        if private_projections.search(text):
+            errors.append(f"{page.name}: private projection feature remains in published content")
+        if private_environment.search(text):
+            errors.append(f"{page.name}: customer documentation must not mention private API environments")
+        if len(re.findall(r"^```", text, re.M)) % 2:
+            errors.append(f"{page.name}: an authored code fence is not closed")
+        links = re.findall(r"\]\(([^\s)]+)\)", text) + re.findall(r'href="([^" ]+)"', text)
+        for link in links:
+            parsed = urlparse(link)
+            if not link.startswith("/") and parsed.netloc != "docs.unabated.com":
+                continue
+            path = parsed.path
+            if path not in routes:
+                errors.append(f"{page.name}: local documentation link has no route: {link}")
+
+    # Authored browser code is published too; it must never change customer
+    # examples or account links based on the documentation review site's host.
+    script = config_path.parent / "assets/docs.js"
+    if script.is_file() and private_environment.search(script.read_text(encoding="utf-8")):
+        errors.append("docs.js: public examples or links mention a private API environment")
 
 
 def main():
@@ -163,6 +227,7 @@ def main():
             errors.append("Shared navigation differs between configs; update both: " + ", ".join(differences[:10]))
             if len(differences) > 10:
                 errors.append(f"Shared navigation has {len(differences) - 10} additional differences")
+        validate_content(configs["dev"], args.repo_root / ENVIRONMENTS["dev"]["config"], errors)
 
     if errors:
         print("Documentation environment validation failed:", file=sys.stderr)
@@ -174,6 +239,7 @@ def main():
     for name, settings in ENVIRONMENTS.items():
         print(f"- {name}: {settings['domain']}; {reference_counts[name]} local references resolved")
     print("- Shared versions/navigation match; production publication remains manual.")
+    print("- Published page links, code fences, public tier labels, and production-only API guidance passed.")
     return 0
 
 
