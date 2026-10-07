@@ -22,9 +22,9 @@ a { text-underline-offset: 3px; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid #74dfb9; outline-offset: 4px; }
 pre { max-width: 100%; overflow-x: auto; }
-/* Scalar Docs 2.8 hardcodes downloads in its multi-page introduction.
-   Keep the machine-readable contract in the agent guide instead. */
-.narrow-references-container .download-container { display: none; }
+/* Scalar can render introduction downloads despite the reference configuration.
+   Hide the control in wide and narrow layouts; the agent guide links the contract. */
+.download-container { display: none; }
 .ua-quickstart { max-width: 820px; margin: 0 auto; padding: 8px 0 24px; }
 .ua-quickstart h1 { font-size: clamp(30px, 3vw, 42px); font-weight: 600; letter-spacing: -1.2px; line-height: 1.18; margin: 0 0 18px; }
 .ua-quickstart h2 { font-size: 19px; font-weight: 600; letter-spacing: -.3px; margin: 0 0 10px; line-height: 1.35; }
