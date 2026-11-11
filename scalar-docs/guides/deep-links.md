@@ -104,7 +104,7 @@ curl --fail-with-body --connect-timeout 5 --max-time 20 --get \
 
 Use `_` for a selection without points when supplying a list of point values. If `points` is supplied, its item count must match `ids`. For Free callers, the operation supports at most 20 selections, all from the same included sportsbook, and returns a generic Gambly URL in `data.url` and `data.individualUrls`. Add your partner code before publishing that URL.
 
-Invalid IDs or mismatched lists can produce `400`; a missing selection can produce `404`; a Concierge API key or a book outside Free API coverage can produce `403`. Same-game parlay pricing and generation are available for Enterprise API.
+Invalid IDs or mismatched lists can produce `400`. An unknown market-line ID produces `404` for Free API keys. A Concierge API key or a book outside Free API coverage can produce `403`. If a `points` value is not on the line's ladder, the response currently returns a link for the line's primary selection rather than an error. Request links with points from your current odds response. Same-game parlay pricing and generation are available for Enterprise API.
 
 ### Read the link result
 

@@ -6,6 +6,8 @@ Server-Sent Events (SSE) sends updates through a persistent HTTP connection. Use
 
 Concierge API streaming covers NFL, NBA, MLB, NHL, and WNBA. Enterprise API coverage follows your agreement. Every subscription remains within your API tier's available data.
 
+The stream currently carries straight and props lines (`marketTypeIds` `1` and `3`). Futures are delivered by the REST odds boards only; a subscription for futures market types currently receives no market-line frames.
+
 <scalar-callout type="info">
 
 Free API access does not include SSE. Use the Free Odds API REST workflow and its polling limits instead.
@@ -29,8 +31,7 @@ Content-Type: application/json
 {
   "eventTypes": ["market_line_update", "event_update"],
   "leagueIds": [5],
-  "marketTypeIds": [1],
-  "includeSnapshot": false
+  "marketTypeIds": [1]
 }
 ```
 
@@ -83,7 +84,7 @@ Most stream messages contain changes rather than a complete view of all odds. Id
 
 SSE market-line messages do not contain a `deepLink` URL. If REST returned a link, retain it for a price or status change only while the selection points remain unchanged. The link encodes those points: when they change, invalidate the old link and obtain a matching link through a workflow available to your API tier before publishing it. Apply the same rule to each alternate selection. Concierge API does not include `GET /deeplink`; its odds store must work without a link. For a newly encountered selection, retrieve its relevant REST data first.
 
-Use the optional server snapshot only after handling its completion and readiness state. If snapshots are unavailable, use REST synchronization with a bounded buffer of incoming events. Reconnect recovery is best effort and does not provide durable historical replay, so a resumed connection alone does not prove your state is complete. [Snapshots and recovery](/guides/streaming/recovery) explains these boundaries.
+Build the initial state from REST. Snapshot-on-subscribe is not currently available, so open the stream, buffer incoming events, load the board with `GET /market/{league}/{marketType}/odds`, then apply buffered and later `market_line_update` frames. Reconnect recovery is best effort and does not provide durable historical replay, so a resumed connection alone does not prove your state is complete. [Snapshots and recovery](/guides/streaming/recovery) explains these boundaries.
 
 ## Choose your next step
 
