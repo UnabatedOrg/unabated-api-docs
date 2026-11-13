@@ -13,8 +13,7 @@ Specify the event families your application actually consumes. Omitted or empty 
   "eventIds": [],
   "marketTypeIds": [1],
   "marketSourceIds": [7],
-  "betTypeIds": [1, 2, 3],
-  "includeSnapshot": false
+  "betTypeIds": [1, 2, 3]
 }
 ```
 
@@ -24,11 +23,11 @@ These are sample IDs, not a current list of available leagues or books. Use `GET
 | --- | --- | --- |
 | `eventTypes` | `string[]` | Event families to deliver; defaults to `market_line_update`. Use exact names below. |
 | `leagueIds` | `int[]` | Limits league-scoped messages. Concierge API remains restricted to its five professional U.S. sports. |
-| `eventIds` | `long[]` | Limits individual lines within **market-line updates and market-line snapshots** by `market.eventId`. It does not filter every event family. |
-| `marketTypeIds` | `int[]` | Limits market-line updates and snapshots by market type. |
-| `marketSourceIds` | `long[]` | Limits source-scoped messages and the lines/alternates within market-line updates and snapshots. |
-| `betTypeIds` | `long[]` | Limits market-line updates and snapshots, and market metadata updates. |
-| `includeSnapshot` | `boolean` | Requests initial market-line snapshot chunks when the server snapshot feature is enabled; defaults to `false`. |
+| `eventIds` | `long[]` | Limits individual lines within **market-line updates** by `market.eventId`. It does not filter every event family. |
+| `marketTypeIds` | `int[]` | Limits market-line updates by market type. The stream currently carries straight (`1`) and props (`3`) lines; futures market types receive no market-line frames. Load futures from the REST odds board. |
+| `marketSourceIds` | `long[]` | Limits source-scoped messages and the lines/alternates within market-line updates. |
+| `betTypeIds` | `long[]` | Limits market-line updates and market metadata updates. |
+| `includeSnapshot` | `boolean` | Reserved. Snapshot-on-subscribe is not currently available, and `true` sends no snapshot frames. Omit it and load current lines through REST. |
 
 Omitted or empty dimension arrays request no additional client filter **within your API tier's data coverage**. The server can narrow requested filters to that coverage. An empty resulting set is not an all-data wildcard.
 
@@ -42,7 +41,7 @@ Unknown league, market type, market source, or bet type values can return `400`.
 
 ## Event names and JSON roots
 
-Data event payloads use a `data` envelope with a camel-case root. Snapshot completion and gap notices use the smaller control shapes shown below.
+Data event payloads use a `data` envelope with a camel-case root. Gap notices use the smaller control shape shown below.
 
 | SSE event | JSON root | Purpose and availability |
 | --- | --- | --- |
@@ -55,17 +54,17 @@ Data event payloads use a `data` envelope with a camel-case root. Snapshot compl
 | `player_news` | `data.playerNews` | Player-news update. Enterprise API. |
 | `player_percent_to_play` | `data.playerPercentToPlay` | Player availability update. Enterprise API. |
 | `play_by_play` | `data.playByPlay` | Play-by-play state. Enterprise API. |
-| `market_line_snapshot` | `data.marketLineUpdate` | Requested initial market-line snapshot chunk; same line shape as a market-line update. |
-| `market_line_snapshot_complete` | top-level `lineCount`, `sequence`, `ready` | Initial snapshot completion/readiness control frame. |
+| `market_line_snapshot` | `data.marketLineUpdate` | Reserved for snapshot-on-subscribe, which is not currently available. Not sent today. |
+| `market_line_snapshot_complete` | top-level `lineCount`, `sequence`, `ready` | Reserved for snapshot-on-subscribe. Not sent today. |
 | `gap` | top-level `droppedEvents` | Automatic warning that an already-open connection discarded queued events because the consumer fell behind. Repair state from REST. |
 
-The control event names cannot be used as ordinary subscription event types. Request `includeSnapshot` to ask for snapshots; listen for `gap` on every connection. The server sends `gap` automatically when queued events are dropped; there is no endpoint to call to request it. It does not replay changes missed between a REST snapshot and opening SSE. Address that race by [opening and buffering SSE before loading REST, then reconciling ordering](/guides/streaming/recovery#rest-initialization-with-buffered-updates). Do not infer commercial feature availability just because an event name exists in the protocol.
+The control event names cannot be used as ordinary subscription event types. Listen for `gap` on every connection. The server sends `gap` automatically when queued events are dropped; there is no endpoint to call to request it. It does not replay changes missed between a REST snapshot and opening SSE. Address that race by [opening and buffering SSE before loading REST, then reconciling ordering](/guides/streaming/recovery#rest-initialization-with-buffered-updates). Do not infer commercial feature availability just because an event name exists in the protocol.
 
 ## Filter applicability
 
 | Family | League | Event ID | Market type | Market source | Bet type |
 | --- | --- | --- | --- | --- | --- |
-| Market-line updates and snapshots | Yes | Yes, within lines | Yes | Yes, within lines and alternates | Yes, within lines |
+| Market-line updates | Yes | Yes, within lines | Yes | Yes, within lines and alternates | Yes, within lines |
 | Event updates | Yes | No | No | No | No |
 | Market updates | Yes | No | No | No | Yes |
 | Market-source updates | No | No | No | Yes | No |
@@ -167,6 +166,27 @@ An update may carry alternate or milestone values while the top-level `points` a
 
 Match alternates by `marketLineId`, retain their own ordering fields, and process liquidity independently of prices. Do not assume the outer line is always the line currently displayed to your users.
 
+For each streamed line, `alternateLines` carries that line's full current alternate set. An alternate missing from it is not currently offered; remove it rather than keeping its last price.
+
+`liquidity` is the dollar stake available at the displayed price, before fees, on exchanges and prediction markets (Novig, Kalshi, Polymarket, Polymarket US, ProphetX). Sportsbooks send `0` or `null`. No traded volume or handle is provided.
+
+### Edge fields
+
+When your API access includes edge data, streamed lines and alternates also carry these fields. These fields are newer than the rest of the line shape and may change.
+
+| Field | Meaning |
+| --- | --- |
+| `edge` | Expected value per unit staked at the book's price, measured against the Unabated fair price at the book's points: (fair probability − book implied probability) / book implied probability. |
+| `unabatedPoints` | Points of the Unabated fair line. |
+| `unabatedPriceAtBook` | Unabated fair price moved to the book's points. |
+| `includePeg` | `true` when the line is not unavailable. It does not guarantee that a fair price is present. |
+| `pegModifiedOn` | When the fair price was last computed. |
+| `bestAltSourcePrice` | The book's price on its highest-edge alternate, in the source's native format (the same format as `sourcePrice`). |
+| `bestAltUnabatedPriceAtBook` | Unabated fair price at that alternate's points. |
+| `bestAltEdge` | Edge of that alternate. |
+
+Any of these can be `null`. Prop edges currently refresh on the REST props board more often than on the stream.
+
 ## Event and metadata updates
 
 <scalar-detail title="Event updates">
@@ -207,8 +227,8 @@ Identify the event by `eventId` and reject older `modifiedOn` values when availa
 
 `data.marketUpdate` contains `leagueId`, `updateType`, and `market`, plus message/correlation IDs. Use the identifiers inside `market` to locate its event and selection; preserve the documented lifecycle state rather than assuming every message means a new active market.
 
-`data.marketSourceUpdate` contains `marketSource`, plus message/correlation IDs. Use `marketSource.id` as the stable book/source identifier. Changes can include active state or separate straight, props, and futures availability.
+`data.marketSourceUpdate` contains `marketSource`, plus message/correlation IDs. Use `marketSource.id` as the stable book/source identifier. Changes can include active state or the separate straight, props, and futures status values, which are informational only; see [source status](/guides/response-concepts#source-status).
 
 </scalar-detail>
 
-Next: [Connect with a complete sample](/guides/streaming/lifecycle) or [handle snapshots and reconnects](/guides/streaming/recovery).
+Next: [Connect with a complete sample](/guides/streaming/lifecycle) or [handle initialization and reconnects](/guides/streaming/recovery).

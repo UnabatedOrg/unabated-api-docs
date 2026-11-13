@@ -2,44 +2,15 @@
 
 **Available for: Concierge API · Enterprise API**
 
-An open connection is useful only if your application knows how to build and repair its state. Initialize from a snapshot, apply updates using stable IDs and ordering fields, and resynchronize whenever continuity is uncertain.
+An open connection is useful only if your application knows how to build and repair its state. Initialize from the REST odds board, apply updates using stable IDs and ordering fields, and resynchronize whenever continuity is uncertain.
 
-## Optional initial snapshot over SSE
+## No snapshot on subscribe
 
-Set `includeSnapshot: true` in `POST /subscriptions` to request the current matching market lines before live delivery. Use it with a subscription that includes `market_line_update` and the matching line filters.
-
-When server snapshots are enabled, the connection is registered first. Events arriving while snapshot chunks are written are queued and delivered afterward. Chunks contain up to 500 lines grouped by league and market type, with the same `data.marketLineUpdate` line shape as ordinary market-line updates.
-
-```text
-event: market_line_snapshot
-data: {"data":{"marketLineUpdate":{"correlationId":"snapshot","leagueId":5,"marketTypeId":1,"marketLines":[]}}}
-
-event: market_line_snapshot_complete
-data: {"lineCount":0,"sequence":12345,"ready":true}
-
-```
-
-The empty chunk above demonstrates the payload shape. A real empty result can have only a completion frame and no chunks.
-
-| Completion field | Meaning |
-| --- | --- |
-| `lineCount` | Number of market lines sent in this snapshot. |
-| `sequence` | Server snapshot-store sequence for diagnostic context. It is not a per-line version or a replay cursor. |
-| `ready` | Whether the server's latest-line store was marked ready when the snapshot began. |
-
-Snapshot chunks and completion frames have no `id:` field. Do not use them to replace your last delivered data-event replay hint.
-
-<scalar-callout type="warning">
-
-The snapshot feature is server-controlled. If disabled, `includeSnapshot: true` currently sends **no snapshot chunks and no completion frame**; live delivery still starts. If a completion arrives with `ready: false`, the snapshot is not ready. Give initialization a bounded deadline and fall back to REST rather than waiting indefinitely.
-
-</scalar-callout>
-
-`ready: true` does not assert that every possible market is present, or that the snapshot is a transactionally frozen view of all sources. The store is maintained from live updates and periodically refreshed. Treat the snapshot as current matching line state, continue comparing line versions, and repair missing or inconsistent data with REST. It does not replace event, team, or player discovery, or link generation where your API tier supports it.
+Snapshot-on-subscribe is not currently available. The stream sends changes only, so load the current board through REST and apply `market_line_update` frames on top of it. The `includeSnapshot` subscription field is reserved: `true` currently sends no `market_line_snapshot` chunks and no `market_line_snapshot_complete` frame, and live delivery starts as usual.
 
 ## REST initialization with buffered updates
 
-Open SSE and begin buffering updates **before** loading REST to address the snapshot/stream race. This works whether or not server snapshots are available:
+Open SSE and begin buffering updates **before** loading REST to address the REST/stream race:
 
 1. Create a narrowly filtered subscription and open its returned signed URL.
 2. Once the connection opens, begin buffering incoming application events, then fetch the relevant REST odds and event data.
@@ -47,9 +18,9 @@ Open SSE and begin buffering updates **before** loading REST to address the snap
 4. Apply the buffered events with the same ordering checks you will use during live delivery.
 5. Switch to live processing and continue to repair gaps or missing metadata from REST.
 
-For odds, fetch `GET /market/{league}/{marketType}/odds` for each league/market-type combination your subscription needs. A league or event name in a REST path is not interchangeable with the numeric IDs used in a subscription body; discover and map both through the reference data.
+For odds, fetch `GET /market/{league}/{marketType}/odds` for each league/market-type combination your subscription needs. Boards are rebuilt periodically, so a fresh board can be slightly older than updates you have already buffered; the ordering checks below keep the newer value. Futures are not streamed, so poll the futures board instead. A league or event name in a REST path is not interchangeable with the numeric IDs used in a subscription body; discover and map both through the reference data.
 
-Bound the buffer by bytes/events and the snapshot request by a timeout. If either budget is exceeded, discard the incomplete local view, narrow the subscription if appropriate, and start a fresh synchronization attempt with backoff. Do not keep growing a queue indefinitely.
+Bound the buffer by bytes/events and the REST request by a timeout. If either budget is exceeded, discard the incomplete local view, narrow the subscription if appropriate, and start a fresh synchronization attempt with backoff. Do not keep growing a queue indefinitely.
 
 This approach covers updates received while REST loads, but **does not create a universal gap-free guarantee**. REST freshness, reconnect retention, pod changes, source behavior, and consumer overload can all affect continuity. Reconcile authoritative state whenever you cannot prove that your local state is current.
 
@@ -64,7 +35,7 @@ For the same market-line identity:
 - Merge explicit streaming fields into the existing record; preserve unrelated REST-only fields. Process explicit nulls instead of treating them as missing fields.
 - Retain a previous `deepLink` only for the same selection with unchanged points. The URL encodes points, so invalidate it whenever points change, including on an alternate. Obtain a matching replacement through a workflow available to your API tier before publishing a link. Do not publish a previous-points URL with an updated line.
 
-Concierge API does not include `GET /deeplink`; its odds store must continue to collect data without a link. When a replacement-link fetch is available and finishes, verify that its selection points still match your current local line before attaching it. Another SSE update can move the points while the REST request is in flight.
+Concierge API does not include `GET /deeplink`; its odds store must continue to collect data without a link. When a replacement-link fetch is available and finishes, check `data.pointsMatched` first: if it is `false`, the link was built for different points (see [Check the requested points](/guides/deep-links#check-the-requested-points)) and must not be attached to the requested line. Then verify that its selection points still match your current local line before attaching it. Another SSE update can move the points while the REST request is in flight.
 
 A minimal update guard looks like this. It invalidates links for changed selection points and merges each alternate independently. Integrate REST synchronization and your hierarchy indexes around it. If your API tier supports link generation, schedule replacement-link requests as needed; publish a link only after retrieving the correct selection URL:
 

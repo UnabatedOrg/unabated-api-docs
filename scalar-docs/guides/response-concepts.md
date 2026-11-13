@@ -78,6 +78,8 @@ Also inspect `disabled` and the presence of the required price/link fields. Do n
 
 Market source `statusId`, `propsStatusId`, and `futuresStatusId` are JSON integers. They describe the source's overall, props, and futures status respectively.
 
+These values are informational only and are not maintained in real time. A source can show `3` while its lines are live. Always use each line's `statusId` to decide whether a price is available.
+
 | Value | Meaning |
 | --- | --- |
 | `1` | High frequency |
@@ -119,7 +121,9 @@ The example identifier is a placeholder. Partner mappings are optional: `fanduel
 
 `price` is American odds. `points` can be absent for a selection without a points line. `openerPrice` and `openerPoints`, when present, describe the first captured line. `alternateLines` describes other available points/prices; use each alternate's own fields.
 
-Source-specific price, format, and liquidity fields can vary across providers. Use `sourceFormat` and the reference schema when interpreting `sourcePrice`. Do not turn an omitted price into zero or assume that omitted liquidity means no liquidity.
+Source-specific price and format fields can vary across providers. Use `sourceFormat` and the reference schema when interpreting `sourcePrice`. Do not turn an omitted price into zero.
+
+`liquidity` is the dollar stake available at the displayed price, before fees, on exchanges and prediction markets (Novig, Kalshi, Polymarket, Polymarket US, ProphetX). Sportsbooks return `0` or `null`. The API does not provide traded volume or handle.
 
 Null fields can be omitted from JSON. Fields outside your API tier's datasets may be absent, and partner/source metadata can be absent when no mapping exists. Clients should tolerate missing optional fields and additional fields while still checking required contract values.
 

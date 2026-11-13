@@ -2,7 +2,7 @@
 
 **Available for: Concierge API · Enterprise API**
 
-Create a subscription, open its signed URL, and handle named SSE frames. These examples run one bounded, 60-second session, then close it. They establish the complete authentication and framing lifecycle; add the [snapshot and recovery workflow](/guides/streaming/recovery) before using streamed updates as a complete production view.
+Create a subscription, open its signed URL, and handle named SSE frames. These examples run one bounded, 60-second session, then close it. They establish the complete authentication and framing lifecycle; add the [REST initialization and recovery workflow](/guides/streaming/recovery) before using streamed updates as a complete production view.
 
 ## Before you run
 
@@ -44,7 +44,7 @@ league = int(os.environ["UNABATED_LEAGUE_ID"])
 if league <= 0:
     raise SystemExit("League ID must be a positive discovered ID.")
 print(json.dumps({"eventTypes": ["market_line_update", "event_update"],
-                  "leagueIds": [league], "includeSnapshot": False}))
+                  "leagueIds": [league]}))
 PY
 )
 
@@ -180,7 +180,7 @@ async function main() {
     headers: {"X-Api-Key": apiKey, "Content-Type": "application/json"},
     body: JSON.stringify({
       eventTypes: ["market_line_update", "event_update"],
-      leagueIds: [leagueId], includeSnapshot: false
+      leagueIds: [leagueId]
     }),
     signal: AbortSignal.timeout(20_000)
   });
@@ -303,7 +303,7 @@ def sse_frames(lines, deadline=None):
 
 def main():
     body = json.dumps({"eventTypes": ["market_line_update", "event_update"],
-                       "leagueIds": [LEAGUE_ID], "includeSnapshot": False}).encode()
+                       "leagueIds": [LEAGUE_ID]}).encode()
     create = Request(BASE + "/subscriptions", data=body, method="POST",
                      headers={"X-Api-Key": API_KEY, "Content-Type": "application/json"})
     with urlopen(create, timeout=20) as response:
