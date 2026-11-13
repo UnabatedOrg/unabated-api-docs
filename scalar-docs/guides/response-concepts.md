@@ -78,13 +78,13 @@ Also inspect `disabled` and the presence of the required price/link fields. Do n
 
 Market source `statusId`, `propsStatusId`, and `futuresStatusId` are JSON integers. They describe the source's overall, props, and futures status respectively.
 
-These values are informational only and are not maintained in real time. A source can show `3` while its lines are live. Always use each line's `statusId` to decide whether a price is available.
+These values are informational only and are not maintained in real time. A source labeled `3` (high delay) is still live; none of these values means the source is offline. Always use each line's `statusId` to decide whether a price is available.
 
 | Value | Meaning |
 | --- | --- |
-| `1` | High frequency |
-| `2` | Low frequency |
-| `3` | Offline |
+| `1` | Real-time |
+| `2` | Low delay: prices can be up to 30 seconds old |
+| `3` | High delay: prices can be more than 30 seconds old |
 
 A returned `0` has no defined source-status meaning; handle it as unknown. Preserve unrecognized numeric values without treating them as available. Also inspect `isActive`, `disabledMarketTypeIds`, and the individual market line before using a source's price. These source statuses do not specify a polling interval or replace the market-line status.
 
