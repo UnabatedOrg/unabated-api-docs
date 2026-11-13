@@ -98,7 +98,7 @@ Open the model SSE subscription, buffer model frames within a bounded budget, an
 
 Repeat this on a prolonged interruption, a `gap` notice, or any uncertain continuity. If the REST request fails, returns `success: false`, or contains no valid state for an event, clear or suspend its active fair-price calculations. Do not keep using an old ladder as if it were current.
 
-The optional `includeSnapshot` market-line feature does not send a model-state snapshot. Fetch the model REST snapshot separately even when your connection also requests ordinary odds updates. See [general recovery](/guides/streaming/recovery) for the limits of replay and snapshot consistency.
+SSE does not send an initial model-state snapshot. Fetch the model REST snapshot separately even when your connection also requests ordinary odds updates. See [general recovery](/guides/streaming/recovery) for the limits of replay and snapshot consistency.
 
 ## Agent task
 

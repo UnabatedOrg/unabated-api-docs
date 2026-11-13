@@ -137,7 +137,7 @@ for league in ((body.get('data') or {}).get('odds') or {}).values():
 
 ## Prices, alternates, and links
 
-`price` is the American odds value. `points` identifies the line for a spread, total, or prop; it can be absent for selections that do not use points. `sourcePrice`, `sourceFormat`, and `liquidity` may supply source-specific information; consult the schema rather than assuming all providers use the same representation.
+`price` is the American odds value. `points` identifies the line for a spread, total, or prop; it can be absent for selections that do not use points. `sourcePrice` and `sourceFormat` supply the source's native price; consult the schema rather than assuming all providers use the same representation. `liquidity` is the dollar stake available at the displayed price on exchanges and prediction markets, and `0` or `null` for sportsbooks; see [response concepts](/guides/response-concepts#prices-and-optional-fields).
 
 `alternateLines` contains alternate points/prices for the selection. Read each alternate's own `points`, `price`, status, and `deepLink`. Do not attach the main line's URL to an alternate with different points.
 
@@ -146,6 +146,10 @@ Use the returned `deepLink` when available. The separate `GET /deeplink` generat
 ## Freshness and empty boards
 
 `data.lastUpdated` is Unix time in milliseconds derived from the newest included line modification. It is not the HTTP response time or a guarantee that every line changed then. Individual lines can have `modifiedOn`, `sequenceNumber`, and `freshnessExpiresAt` for finer context.
+
+Boards are rebuilt periodically rather than on every change. As an approximate guide, not a guarantee: straight boards about every 30–40 seconds, props boards about every 5 minutes, and futures boards every 5 minutes. Requesting a board more often does not make it fresher. Where your API tier includes streaming, the stream delivers straight and props changes within seconds; futures are available from REST boards only.
+
+Straight and props boards keep a suspended line with `statusId` `2`. The futures board lists only available lines: a suspended future disappears from the board and returns when it reopens. Treat a future missing from the board as not currently offered.
 
 Free odds come from a delayed snapshot. Do not fall back to a different key or a live dataset to hide a delayed-data error. A temporary delayed snapshot failure can return `503` with `Retry-After: 5`.
 
