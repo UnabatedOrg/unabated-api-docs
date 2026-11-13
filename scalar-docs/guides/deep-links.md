@@ -104,7 +104,7 @@ curl --fail-with-body --connect-timeout 5 --max-time 20 --get \
 
 Use `_` for a selection without points when supplying a list of point values. If `points` is supplied, its item count must match `ids`. For Free callers, the operation supports at most 20 selections, all from the same included sportsbook, and returns a generic Gambly URL in `data.url` and `data.individualUrls`. Add your partner code before publishing that URL.
 
-Invalid IDs or mismatched lists can produce `400`; a missing selection can produce `404`; a Concierge API key or a book outside Free API coverage can produce `403`. Same-game parlay pricing and generation are available for Enterprise API.
+Invalid IDs or mismatched lists can produce `400`. An unknown market-line ID produces `404` for Free API keys; other keys receive `200`, with a `null` entry at that selection's position in `data.individualUrls`. A Concierge API key or a book outside Free API coverage can produce `403`. A `points` value that is not on a selection's ladder does not produce an error; see [Check the requested points](#check-the-requested-points). Request links with points from your current odds response. Same-game parlay pricing and generation are available for Enterprise API.
 
 ### Read the link result
 
@@ -123,6 +123,50 @@ In a successful HTTP response, `data.status` is a JSON integer and `data.statusS
 | `5` | `supports_one_bet_only` |
 
 For example, full support is returned as `"status": 0` with `"statusString": "full_support"`. These values describe the link result and are separate from event, market-line, and source statuses. Bet-slip generation and polling have their own [status lifecycle](/guides/bet-slips).
+
+### Check the requested points
+
+When a requested `points` value is not on a selection's ladder, the link is built for another line of that selection, usually its current main line. `data.status` is unchanged by this substitution, so a points mismatch can still return `full_support`. Instead, the response reports it in two fields:
+
+| Field | Meaning |
+| --- | --- |
+| `data.pointsMatched` | `true` when every selection matched its requested points or no points were requested. `false` when at least one link was built for different points. Omitted when the match was not evaluated. |
+| `data.pointsMismatches` | One entry per selection whose requested points were not found. Omitted when every selection matched. |
+
+Each `pointsMismatches` entry contains:
+
+| Field | Meaning |
+| --- | --- |
+| `index` | Position of the selection in the request, starting at `0`. |
+| `marketLineId` | The requested market-line ID. |
+| `requestedPoints` | The points value that was requested. |
+| `points` | The points of the line the link was built for. Omitted for a line without points. |
+| `message` | A readable explanation of the substitution. The same text is added to the top-level `messages` array, one string per substitution. |
+
+```json
+{
+  "success": true,
+  "messages": ["<one explanation per substitution>"],
+  "data": {
+    "status": 0,
+    "statusString": "full_support",
+    "url": "https://www.gambly.com/deeplink/odds/<book-id>/<market-line-id>/<linked-points>",
+    "individualUrls": ["https://www.gambly.com/deeplink/odds/<book-id>/<market-line-id>/<linked-points>"],
+    "pointsMatched": false,
+    "pointsMismatches": [
+      {
+        "index": 0,
+        "marketLineId": 123456789,
+        "requestedPoints": -7.5,
+        "points": -3.5,
+        "message": "<explanation>"
+      }
+    ]
+  }
+}
+```
+
+This is a structural example, not an active selection. Check `data.pointsMatched` before presenting a link as the requested points. When it is `false`, either show the line the link was built for, using `pointsMismatches[].points`, or drop that link and request a new one with points from your current odds response.
 
 ## Generated bet-slip links
 
