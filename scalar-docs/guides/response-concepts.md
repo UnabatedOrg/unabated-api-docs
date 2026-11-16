@@ -64,6 +64,8 @@ Use the group's bet type and `sideName` to understand the selection. Do not labe
 
 These are event/group statuses. A live event does not imply that every sportsbook line is currently available.
 
+A group's `isLive` is `true` exactly when its event `statusId` is `2`. It describes the event, not the markets: the `pregame` and `live` dictionaries (and `market.live` on streamed updates) say whether a group's markets are pre-game or in-play. Once a game starts, its `pregame` groups also show `statusId` `2` and `isLive` `true`; their lines are normally closed, so check each line's own status before using a price. Stop using an event's prices when its `statusId` becomes `3`.
+
 ## Market-line status
 
 | `statusId` | Meaning |
