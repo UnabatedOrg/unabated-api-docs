@@ -141,6 +141,8 @@ for league in ((body.get('data') or {}).get('odds') or {}).values():
 
 `alternateLines` contains alternate points/prices for the selection. Read each alternate's own `points`, `price`, status, and `deepLink`. Do not attach the main line's URL to an alternate with different points.
 
+Concierge API includes betting edge. Enterprise API includes it when enabled under your agreement. Free API omits the edge fields. On main lines, read `edge` and `bestAltEdge`. For an alternate, read its own `edge`. See [how to interpret missing edge values](/guides/response-concepts#betting-edge).
+
 Use the returned `deepLink` when available. The separate `GET /deeplink` generation endpoint is available to Free API and Enterprise API, not Concierge API; Concierge integrations can display odds without calling it. For Free content partners, add the partner code before publishing; the [deep-link guide](/guides/deep-links) shows the complete process. A link resolves the destination at click time; the sportsbook can have changed its price or availability since your response.
 
 ## Freshness and empty boards

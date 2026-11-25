@@ -5,6 +5,7 @@ Build with REST odds and the workflows included in your API tier. Free API and E
 | Capability | Free API | Concierge API | Enterprise API |
 | --- | --- | --- | --- |
 | REST odds | Included, delayed by at least 15 seconds | Live data | As contracted |
+| Betting edge (`edge`, `bestAltEdge`) | Not included | Included | When enabled under your agreement |
 | Sports | Supported sports with available included-book data | NFL, NBA, MLB, NHL, WNBA | As contracted |
 | Sportsbooks | Included provider set | All books within the five supported leagues | As contracted |
 | Odds polling | One request every five seconds per key, shared across odds endpoints | Subject to your access policy | Subject to your access policy |

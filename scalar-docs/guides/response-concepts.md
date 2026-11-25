@@ -127,6 +127,12 @@ Source-specific price and format fields can vary across providers. Use `sourceFo
 
 Null fields can be omitted from JSON. Fields outside your API tier's datasets may be absent, and partner/source metadata can be absent when no mapping exists. Clients should tolerate missing optional fields and additional fields while still checking required contract values.
 
+## Betting edge
+
+Concierge API includes betting edge on REST odds and SSE market-line updates. Enterprise API includes it when enabled under your agreement. Free API omits these fields.
+
+On a main line, `edge` applies to its points and price, and `bestAltEdge` applies to the best alternate. Each entry in `alternateLines` has its own optional `edge`. Even with access, a value can be missing when Unabated has no comparison line at those points. Treat a missing or null value as unknown. A numeric `0` means the calculated edge is zero.
+
 ## Timestamps and ordering
 
 `data.lastUpdated` in an odds response is Unix time in **milliseconds**, based on the newest included line modification. Convert it with `new Date(value)` in JavaScript, or divide by `1000` before passing it to Python's timestamp conversion. A value of `0` does not provide a useful observed update time.
